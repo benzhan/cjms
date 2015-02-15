@@ -147,7 +147,7 @@ class Template {
             $templates = func_get_args();
         }
 
-        echo $this->fetch($templates);
+        exit($this->fetch($templates));
     }
 }
 

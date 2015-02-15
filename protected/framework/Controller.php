@@ -1,10 +1,10 @@
 <?php
 
 class Controller{
-    public $template;
+    public $tpl;
     
-    private function __construct() {
-        $this->template = Template::init();
+    public function __construct() {
+        $this->tpl = Template::init();
     }
     
 }

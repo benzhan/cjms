@@ -13,6 +13,7 @@ class DefaultController extends Controller {
      * @param array $args
      */
     function actionIndex(array $args) {
-        
+        //$this->tpl-
+        $this->tpl->display('index');
     }
 }

@@ -11,6 +11,9 @@ class RouterHelper {
     private $mParts;
 
     function __construct($url = "") {
+        if (defined('SITE_DIR')) {
+            $url = str_replace(SITE_DIR, '', $url);
+        }
         $this->mParts = preg_split("/\//", $url, null, PREG_SPLIT_NO_EMPTY);
     }
 
@@ -70,17 +73,20 @@ class RouterHelper {
             unset($classParts[$len - 2]);
         }
         
-        return join("_", $classParts) . "Controller";
+        $className = join("_", $classParts);
+        $className || $className = 'Default';
+        
+        return $className . 'Controller';
     }
 
     function getFunName() {
         $parts = $this->mParts;
         $funcName = end($parts);
-        $pos = strpos($funcName, "?");
+        $pos = strpos($funcName, '?');
         if ($pos !== false) {
             $funcName = substr($funcName, 0, $pos);
         }
-        
+        $funcName || $funcName = 'Index';
         return "action{$funcName}";
     }
 
