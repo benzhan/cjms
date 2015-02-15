@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>文档中心</title>
+<link rel="stylesheet" href="<?=SITE_URL?>static/css/bootstrap.min.css">
+<style>
+ .red {color:red;}
+</style>
+
+</head>
+<body>
+<div class="container">
+  <table id="class_list" class='table'>
+    <thead>
+      <tr>
+        <th class="th">接口名</th>
+        <th class="th">作者</th>
+        <th class="th">注释</th>
+      </tr>
+    </thead>
+    <tbody>
+  <?
+     foreach($classInfos as $name => $classInfo) { 
+         $id = str_replace('.', '_', $name);
+         $id = str_replace('/', '_', $name);
+  ?>
+      <tr id="<?=$id;?>">
+          <th><span controller="true" style="font-size:16px;"><?=$name?></span></th>
+          <td><?=$classInfo['author']?></td>
+          <td class="td"><?=$classInfo['desc']?></td>
+      </tr>
+  <?
+         $classInfo['funcs'] = (array) $classInfo['funcs'];
+         foreach($classInfo['funcs'] as $funcName => $func) { 
+             $subId = $id . '_' . str_replace('/', '_', $funcName);
+  ?>
+      <tr id="<?= $subId ?>" pId="<?=$id?>" hasChild="<?= $func['parameter'] ? 'true'  : '' ?>">
+          <th>
+              <span controller="true" style="font-size:16px;">
+                <?= "{$name}/{$funcName}"?>
+              </span>
+              <!-- [<a href="javascript:debugInterface('<?=$name . '.' . $funcName?>')">调试</a>] -->
+          </th>
+          <td class="td"><?=$func['author']?></td>
+          <td class="td"><?=$func['desc']?></td>
+      </tr>
+  <?     } ?>
+  <? } ?>
+    </tbody>
+  </table>
+</div>
+<script id="table_tr" type="text/html">
+<% for (var funcName in params) { %>
+  <tr pId="<%= pid %>">
+      <th>
+          <%= funcName %>
+      </th>
+      <td class="td">
+        <%= params[funcName]['type'] %>
+      </td>
+      <td class="td">
+        <% if (params[funcName]['desc']) { %>
+        <span style="margin-right:20px;"><%= params[funcName]['desc'] %></span>
+        <% } %>
+        <span class="red"><%= params[funcName]['rule'] %></span>
+      </td>
+  </tr>
+<% } %>
+</script>
+<script>
+    var BDY = {};
+    BDY.url = "<?=SITE_URL?>";
+</script>
+<script src="<?=SITE_URL?>static/js/seajs.utils.js"></script>
+<script src="<?=SITE_URL?>static/js/jquery-1.10.2.js"></script>
+<script src="<?=SITE_URL?>static/js/bootstrap.js"></script>
+
+<script>
+    seajs.use("js/doc");
+</script>
+
+</body>
+</html>
