@@ -21,7 +21,7 @@
         $treeTable.addClass('tree_table');
 
         //添加需要的样式
-        seajs.use( 'js/treeTable/' + opts.theme + '/jquery.treeTable.css');
+        seajs.use( 'js/libs/treeTable/' + opts.theme + '/jquery.treeTable.css');
 
         var css = {
             'N' : opts.theme + '_node',

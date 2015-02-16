@@ -13,7 +13,9 @@ class DefaultController extends Controller {
      * @param array $args
      */
     function actionIndex(array $args) {
-        //$this->tpl-
+        $objVMenu = new VMenuNode();
+        $datas = $objVMenu->getLevel2Data();
+        $this->tpl->assign('menus', $datas);
         $this->tpl->display('index');
     }
 }

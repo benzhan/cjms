@@ -2,8 +2,22 @@
 class Model {
     protected $tableName;
     protected $dbKey = 'default';
-    public $helper;
-    public $db;
+    /**
+     * 数据库的表助手
+     * @var TableHelper
+     */
+    public $objHelper;
+    
+    /**
+     * 数据库的操作类
+     * @var DB
+     */
+    public $objDb;
+    
+    /**
+     * 数据库的操作类集合 array(string => DB)
+     * @var Array 
+     */
     public $dbs;
 
     public function __construct() {
@@ -12,11 +26,11 @@ class Model {
 
     private function getHelper() {
         $this->getDb();
-        if (!$this->helper) {
-            $this->helper = new TableHelper($this->tableName, $this->dbKey);
+        if (!$this->objHelper) {
+            $this->objHelper = new TableHelper($this->tableName, $this->dbKey);
         }
         
-        return $this->helper;
+        return $this->objHelper;
     }
 
     private function getDb() {
@@ -26,10 +40,10 @@ class Model {
         
         // 以下写法完全是为了zend studio的提示功能
         if (false) {
-            $this->db = $this->dbs;
+            $this->objDb = $this->dbs;
         }
-        $this->db = $this->db[$this->dbKey];
-        return $this->db;
+        $this->objDb = $this->dbs[$this->dbKey];
+        return $this->objDb;
     }
 
 }

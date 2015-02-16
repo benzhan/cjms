@@ -7,7 +7,6 @@ header("Cache-control: private");
 header("Content-type: text/html; charset=" . DEFAULT_CHARSET);
 
 $url = $_SERVER["REQUEST_URI"];
-
 $helper = new RouterHelper($url);
 $className = $helper->getClassName();
 $funcName = $helper->getFunName();

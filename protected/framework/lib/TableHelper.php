@@ -15,11 +15,11 @@ class TableHelper {
      * @param string $tableName 表名
      * @param string/object $dbKey $dbKey或db对象
      */
-    function __construct($tableName, $dbKey) {
-        global $db;
+    function __construct($tableName, $dbKey = 'default') {
+        $dbs = DB::init($GLOBALS['dbInfo']);
         $this->_tableName = $tableName;
         if (is_string($dbKey)) {
-            $this->_db = $db[$dbKey];
+            $this->_db = $dbs[$dbKey];
         } else {
             $this->_db = $dbKey;
         }
@@ -523,7 +523,7 @@ class TableHelper {
         
     private function getTableName(&$args) {
         if (isset($args['_tableName'])) {
-            $tableName = arrayPop('_tableName', $args);
+            $tableName = arrayPop($args, '_tableName');
         } else {
             $tableName = $this->_tableName;
         }

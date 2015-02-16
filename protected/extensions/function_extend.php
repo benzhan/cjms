@@ -15,13 +15,31 @@ function getip(){
 	return substr($ip, 0, 15);
 }
 
+/**
+ * 删除并返回某个key的值
+ * @author benzhan
+ */
 function arrayPop(&$array, $key) {
     $value = $array[$key];
     unset($array[$key]);
     return $value;
 }
 
-function arrayFilter(array $array, array $keys) {
+
+/**
+ * 从数组中过滤出指定key的子数组<br>
+ * 支持arrayFilte(array $arr, array $keys)<br>
+ * 支持arrayFilte(array $arr, $key1, $key2, $key3)<br>
+ * @author benzhan
+ */
+function arrayFilter(array $array, $keys) {
+    if (!is_array($keys)) {
+        $args = func_get_args();
+        //最后一个是数组
+        $array = arrayPop($args, 0);
+        $keys = $args;
+    }
+    
     $tData = array();
     foreach ($keys as $key) {
         $tData[$key] = $array[$key];
