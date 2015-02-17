@@ -1,10 +1,52 @@
 define(function(require, exports, module) {
+	var lib = require('js/libs/library.js');
+	
 	var C = {
         init : function() {
            C.resizeFrames();
            C.bindBarEvent();
            
            $(window).on('resize', C.resizeFrames);
+           
+           // 点击展现数据
+           $('#navbar').on(BDY.click, "[nodeId]", function() {
+        	   var leftUrl = $(this).attr('leftUrl');
+        	   var rightUrl = $(this).attr('rightUrl');
+        	   if (!leftUrl) {
+        		   var nodeId = $(this).attr('nodeId');
+        		   leftUrl = SITE_URL + 'default/tree?nodeId=' + nodeId;
+        	   }
+        	   $('#tree').attr('src', leftUrl);
+        	   
+        	   if (rightUrl) {
+        		   $('#main').attr('src', rightUrl);
+        	   }
+           });
+           
+           // 点击关闭左导航逻辑
+           $('#barImg').on(BDY.click, function() {
+        	   var $tree = $("#treeDiv");
+        	   var oldWidth = $tree.attr('oldWidth');
+        	   if (oldWidth) {
+        		   $tree.css("width", oldWidth);
+        		   $tree.attr('oldWidth', null);
+        		   $('#barImg').attr('src', "static/images/bar.gif");
+        	   } else {
+        		   $tree.attr('oldWidth', $tree.width());
+        		   $tree.css("width", 0);
+        		   $('#barImg').attr('src', "static/images/bar2.gif");
+        	   }
+        	   
+        	   C.resizeFrames();
+           });
+           
+           // 复制main里面的url
+           $('#copyUrl').copy({
+               'getContent' : function(clip) {
+            	   lib.showTip("复制成功!");
+                   return top.main.location.href;
+               }
+           });
         },
         resizeFrames : function() {
             $('#mainDiv').width($(window).width() - $('#treeDiv').width() - $('#bar').width() - 3);

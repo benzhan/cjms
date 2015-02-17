@@ -1222,6 +1222,7 @@ if ( typeof JSON !== 'object') {
 // +++++++++++++++++++++++++++++++++++++++ 项目配置
 // ++++++++++++++++++++++++++++++++++++++++++
 
+var SITE_URL = "/cjms/";
 window.BDY = window.BDY || {};
 if ('createTouch' in document) {
     BDY.click = 'touchclick';
@@ -1247,7 +1248,7 @@ seajs.config({
         'treeTable' : 'js/libs/treeTable/jquery.treeTable.js'
     },
     debug : BDY.debug,
-    base : BDY.url ? BDY.url + '/static/' : './static/',
+    base : SITE_URL ? SITE_URL + '/static/' : './static/',
     charset : 'utf-8',
     timeout : 20000
 });

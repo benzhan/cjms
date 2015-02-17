@@ -11,8 +11,6 @@ define('TIME', time());
 define('NOW', date('Y-m-d H:i:s', TIME));
 define('TODAY', date('Y-m-d', TIME));
 
-define('SITE_NAME', 'CJ管理平台');
-define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST'] . SITE_DIR);
 
 $localIps = array(
     '127.0.0.1',
@@ -66,6 +64,11 @@ if (ENV != ENV_FORMAL) {
     // 站点URL，最后不带斜杠
     define('SITE_DIR', '/cjms.com/');
 }
+
+define('SITE_NAME', 'CJ管理平台');
+define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST'] . SITE_DIR);
+
+
 /* 
 $GLOBALS['dbInfo']['default'] = array(
     'enable' => true,

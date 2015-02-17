@@ -3,8 +3,8 @@
 class VMenuNode extends Model {
     protected $tableName = 'vMenuNode';
 
-    function getChildData($pId) {
-        $datas = $this->objHelper->getObject(array('parentNodeId' => $pId), array('_sort' => 'sortPos ASC'));
+    private function getChildData($pId) {
+        $datas = $this->getChildByPid($pId);
         
         foreach ($datas as $key => $data) {
             $datas[$key]['childNum'] = $this->objHelper->getCount(array('parentNodeId' => $data['nodeId']));
@@ -14,12 +14,27 @@ class VMenuNode extends Model {
     }
     
     function getChildByPid($pId) {
-        $pId = (array) $pId;
-        return $this->objHelper->getObject(array('parentNodeId' => $pId), array('_sortExpress' => 'sortPos'));
+        return $this->objHelper->getObject(array('parentNodeId' => $pId), array('_sort' => 'sortPos ASC'));
+    }
+    
+    function getDirectSubNode($pId) {
+        $pId = (int) $pId;
+        $menuDatas = $this->getChildData($pId);
+        if ($menuDatas) {
+            foreach ($menuDatas as $key => $data) {
+                $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
+                $data['childNum'] > 0 && $node['items'] = array();
+                $menuDatas[$key] = $node;
+            }
+        }
+    
+        return $menuDatas;
     }
 
     function getNodeById($nodeId) {
-        return $this->objHelper->getOneObject(compact('nodeId'));
+        $data = $this->objHelper->getOneObject(compact('nodeId'));
+        $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
+        return $node;
     }
     
     /**
