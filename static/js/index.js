@@ -9,7 +9,7 @@ define(function(require, exports, module) {
            $(window).on('resize', C.resizeFrames);
            
            // 点击展现数据
-           $('#navbar').on(BDY.click, "[nodeId]", function() {
+           $('#navbar').on('click.navbar', "[nodeId]", function() {
         	   var leftUrl = $(this).attr('leftUrl');
         	   var rightUrl = $(this).attr('rightUrl');
         	   if (!leftUrl) {
@@ -21,6 +21,20 @@ define(function(require, exports, module) {
         	   if (rightUrl) {
         		   $('#main').attr('src', rightUrl);
         	   }
+        	   
+        	   if ($(this).parents('[nodeId]').length) {
+        		   $('body').trigger('click');
+        		   return false;
+        	   }
+           });
+           
+           $('.dropdown').on('mouseover', function() {
+        	   $('.dropdown').removeClass('open');
+        	   $(this).addClass('open');
+           });
+           
+           $('.dropdown').on('mouseout', function() {
+        	   $('.dropdown').removeClass('open');
            });
            
            // 点击关闭左导航逻辑
@@ -47,6 +61,7 @@ define(function(require, exports, module) {
                    return top.main.location.href;
                }
            });
+
         },
         resizeFrames : function() {
             $('#mainDiv').width($(window).width() - $('#treeDiv').width() - $('#bar').width() - 3);
