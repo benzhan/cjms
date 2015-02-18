@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><?= SITE_NAME ?></title>
+
+<!-- Bootstrap -->
+<link href="<?= SITE_URL ?>static/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    .container {
+      padding:10px;
+      margin:0;
+    }
+    .nav_tree {
+      float:left;
+      min-width:200px;
+      margin-right:10px;
+    }
+    .nav_tree .panel-body {
+      min-height:200px;
+    }
+    .nav_node {
+      float:left;
+      width:600px;
+    }
+    .nav_node .panel-body {
+      min-height:250px;
+    }
+    
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel panel-primary nav_tree">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">导航树</h3>
+	  </div>
+	  <div class="panel-body">
+	    <div id="tree"></div>
+	  </div>
+	  <div class="panel-footer">
+        <input class="btn btn-default center-block" type="button" value="保存节点位置">
+      </div>
+	</div>
+	
+	<div class="panel panel-info nav_node">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">节点内容</h3>
+	  </div>
+	  <div class="panel-body">
+	    <form class="form-horizontal">
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">节点id</label>
+		    <div class="col-sm-10">
+		      <p class="form-control-static" id="nodeId">0</p>
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="node_name" class="col-sm-2 control-label">节点名称</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="node_name" placeholder="名称">
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="leftUrl" class="col-sm-2 control-label">左边的URL</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="leftUrl" placeholder="左边导航的URL">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="rightUrl" class="col-sm-2 control-label">右边的URL</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="rightUrl" placeholder="右边内容区的URL">
+		    </div>
+		  </div>
+
+		  <div class="form-group">
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="button" class="btn btn-default" id="saveNode">保存</button>
+		    </div>
+		  </div>
+		</form>
+	  </div>
+	</div>
+
+  </div>
+
+  	<script src="<?=SITE_URL?>/static/js/libs/seajs.utils.js"></script>
+	<script src="<?=SITE_URL?>/static/js/libs/jquery-1.10.2.js"></script>
+	<script src="<?=SITE_URL?>/static/js/libs/skytree/Script/SkyTree.js"></script>
+	<script src="<?=SITE_URL?>/static/js/libs/skytree/Script/Lang/cn.js"></script>
+
+	<script>
+		seajs.use('js/menu.js', function(page) {
+			page.init(<?= json_encode($tree)?>);
+		});
+	</script>
+</body>
+</html>
+

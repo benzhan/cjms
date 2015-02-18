@@ -19,12 +19,7 @@ class CMenuNode extends Model {
     
     function saveNode($args) {
         $nodeId = (int) $args ["nodeId"];
-        if ($nodeId) {
-            $this->objHelper->updateObject(arrayFilter($args, 'nodeName', 'leftUrl', 'rightUrl'), compact('nodeId'));
-        }
-        
-        return $nodeId;
+        $this->objHelper->updateObject(arrayFilter($args, 'nodeName', 'leftUrl', 'rightUrl'), compact('nodeId'));
     }
-    
     
 }

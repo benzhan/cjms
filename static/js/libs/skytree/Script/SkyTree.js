@@ -826,7 +826,7 @@ SkyTree.prototype.clientAddNode = function(idx,bSub,fShow){
     }else if(fShow & 2){
         //focus the new node
         this.expandToNode(aNode.index);
-        aNode.editText();
+        // aNode.editText();
     }
     //this.hideInfo();
     return aNode;
@@ -851,8 +851,7 @@ SkyTree.prototype.createNode = function(idx,fShow){
         aNode.show();
     }
     this.countNode++;
-    //被我移动到别处
-    //if(typeof(this.afterinsert) == 'function'){this.afterinsert(this,aNode);}
+    if(typeof(this.afterinsert) == 'function'){this.afterinsert(this,aNode);}
     return aNode;
 };
 
@@ -1222,7 +1221,7 @@ SkyTree.prototype.focusNode = function(idx){
     }
     if(this.curNode){
         if(aNode.index == this.curNode.index){ //begin editing display text
-            this.curNode.editText();
+            // this.curNode.editText();
             //这里被我注释掉了return
             //return;
         }else{

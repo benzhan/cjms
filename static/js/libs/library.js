@@ -79,7 +79,7 @@ define(function(require, exports, module) {
      */
     function setParam(name, value, causeHistory) {
         var hash = document.location.hash.substr(2);
-        if ($.isObject(name)) {
+        if ($.isPlainObject(name)) {
             // 支持 setParam(value, causeHistory)的写法
             causeHistory = value;
             value = name;
@@ -103,7 +103,7 @@ define(function(require, exports, module) {
     };
     
     function setParam2(name, value, str) {
-        if ($.isObject(name)) {
+        if ($.isPlainObject(name)) {
             // 支持 setParam(value, causeHistory)的写法
             str = value;
             value = name;
@@ -182,11 +182,6 @@ define(function(require, exports, module) {
         data = data || {};
         
         data['g_appid'] = getParam('g_appid');
-        data['g_cid'] = getParam('g_cid');
-        data['d_uuid'] = getParam('d_uuid');
-        data['app_ver'] = getParam('app_ver');
-        data['web_ver'] = getParam('web_ver');
-        data['platform'] = getParam('platform');
         
         data['username'] = getLocalData('username');
         data['password'] = getLocalData('password');
@@ -224,7 +219,7 @@ define(function(require, exports, module) {
             data = {};
         }
 
-        data = _getDefaultData(data);
+        // data = _getDefaultData(data);
         if (window.KLCommon && KLCommon.post) {
             KLCommon.post(url, data, function(objResult) {
                 _handleResult(callback, objResult);
@@ -314,7 +309,7 @@ define(function(require, exports, module) {
     }
     
     function getLocalData(key) {
-        return getParam(key) || localStorage.getItem(key) || $.cookie(key);
+        return getParam(key) || localStorage.getItem(key);
     }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -370,17 +365,6 @@ define(function(require, exports, module) {
         
         _initEvent();
         _initUrl();
-        
-        // 初始化入口页面
-        var page = getParam("page");
-        if (!page) {
-            setParam("page", "gift-list", true);
-        } else {
-            var $child = $("#container").children();
-            if (!$child.length) {
-                _redirectPage(page);                
-            }
-        }
     }
        
     function _initEvent() {
@@ -527,15 +511,12 @@ define(function(require, exports, module) {
             case "test":
             case "sandbox":
                 exports.url = "http://test.mgame.mbox.duowan.com/";
-                exports.apiUrl = "http://test.api.5253.com/";
                 break;
             case "new":
                 exports.url = "http://new.mgame.mbox.duowan.com/";
-                exports.apiUrl = "http://api.5253.com/";
                 break;
             default:
-                exports.url = "http://mgame.mbox.duowan.com/";
-                exports.apiUrl = "http://api.5253.com/";
+                exports.url = SITE_URL;
                 break;
         }
         
@@ -829,6 +810,8 @@ define(function(require, exports, module) {
             });
         }
     }
+    
+    init();
     
 });
 

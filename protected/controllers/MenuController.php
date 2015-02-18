@@ -2,124 +2,114 @@
 
 class MenuController extends Controller {
     
-    private function initNodeJsEvent($node) {
-        if ($node['leftUrl'] && strpos($node['leftUrl'], 'javascript:') === false) {
-            $leftUrl = $node['leftUrl'];
-        } else if ($node['leftUrl']) {
-        	$leftUrl = "javascript:";
-            $leftEvent = substr($node['leftUrl'], strlen('javascript:'));
-        }
-        
-        if ($node['rightUrl'] && strpos($node['rightUrl'], 'javascript:') === false) {
-        	$rightUrl = $node['rightUrl'];
-        } else if ($node['leftUrl']) {
-        	$rightUrl = "javascript:";
-            $rightEvent = substr($node['rightUrl'], strlen('javascript:'));
-        }
+    /**
+     * 首页
+     * @author benzhan
+     */
+    function actionIndex() {
+        $objMenu = new VMenuNode();
+        $items = $objMenu->getDirectSubNode(0);
 
-        $nodeId = (int) $node['nodeId'];
-        $node['jsEvent'] = "menuClickEvent('{$leftUrl}', '{$rightUrl}', $nodeId);{$leftEvent};{$rightEvent};";
-        return $node;
+        $node = array('text' => '根目录', 'value' => 0, 'data' => array());
+        $node['items'] = $items;
+        $node = array('items' => $node);
+        $this->tpl->assign('tree', array('items' => $node));
+        $this->tpl->display('menu');
     }
     
     /**
-     * 获取菜单的数据
+     * 获取子节点
      * @author benzhan
+     * @param unknown $args
      */
-    function actionGetMenuData() {
-        $objVMenu = new VMenuNode();
-        $nodes = $objVMenu->getChildByPid(0);
-        
-        $datas = array();
-        $ids = array();
-        foreach ($nodes as $node) {
-            $ids[] = $node['nodeId'];
-            $datas[$node['nodeId']] = $this->initNodeJsEvent($node);
-        }
-        
-        $nodes = $objVMenu->getChildByPid($ids);
-        foreach ($nodes as $node) {
-            $datas[$node['parentNodeId']]['items'][$node['nodeId']] = $this->initNodeJsEvent($node);
-        }
-        
-        return $datas;
-    }
-    
-//     function getAllTree($parentNodeId) {
-//         $node['items'] = $this->getDirectSubTree($parentNodeId);
-        
-//         if ($node['items']) {
-//             foreach ($node['items'] as &$item) {
-//                 $is = $this->getAllTree($item['value']);
-//                 $item['items'] = $is['items'];
-//             }
-//         } else {
-//             unset($node['items']);
-//         }
-//         return $node;
-//     }
-    
-
-    function actionGetTree($parentNodeId) {
-        $menuDatas = $this->getDirectSubTree($parentNodeId);
-        
-        $objRMenu = new RMenuNode();
-        $data = $objRMenu->getNodeById($parentNodeId);
-        $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
-        
-        $node['items'] = $menuDatas;
-        
-        return array('items' => array($node));
-    }
-    
-    private function getDirectSubTree($pId) {
-    	$pId = (int) $pId;
-    	$oVMenuNode = new VMenuNode();
-        $menuDatas = $oVMenuNode->getChildData($pId);
-        if ($menuDatas) {
-            foreach ($menuDatas as $key => $data) {
-                $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
-                $data['childNum'] > 0 && $node['items'] = array();
-                $menuDatas[$key] = $node;
-            }
-        }
-        
-        return $menuDatas;
-    }
-    
-    function actionGetChildsByPId() {
-        $pId = (int) $_REQUEST['pId'];
-        $menuDatas = $this->getDirectSubTree($pId);
-        return array('ret' => true, 'data' => array('items' => $menuDatas));
-    }
-           
-    function actionAddNode() {
-        $nodeId = $this->_oMenuNode->addNode($_REQUEST);
-        Response::success(compact('nodeId'), '添加成功！');
-    }
-    
-    function actionSaveNode($args) {
+    function actionGetChildsByPId($args) {
         $rules = array(
             'nodeId' => 'int'
+        );
+        Param::checkParam($rules, $args);
+        
+        $objMenu = new VMenuNode();
+        $nodes = $objMenu->getDirectSubNode($args['nodeId']);
+        $nodes = array('items' => $nodes);
+        Response::success($nodes);
+    }
+    
+    /**
+     * 添加节点
+     * @author benzhan
+     * @param unknown $args
+     */
+    function actionAddNode($args) {
+        $rules = array(
+            'nodeName' => 'string',
+            'leftUrl' => array('string', 'emptyable' => true),
+            'rightUrl' => array('string', 'emptyable' => true),
+            'parentNodeId' => 'int'
+        );
+        Param::checkParam($rules, $args);
+        
+        $objCMenu = new CMenuNode();
+        $nodeId = $objCMenu->addNode($args);
+        
+        Response::success($nodeId, '添加成功！');
+    }
+    
+    /**
+     * 保存子节点
+     * @author benzhan
+     * @param unknown $args
+     */
+    function actionSaveNode($args) {
+        $rules = array(
+            'nodeId' => 'int',
+            'nodeName' => 'string',
+            'leftUrl' => array('string', 'emptyable' => true),
+            'rightUrl' => array('string', 'emptyable' => true),
         );
         Param::checkParam($rules, $args);
  
         $objCMenu = new CMenuNode();
         $nodeId = $objCMenu->saveNode($args);
         
-        Response::success(compact('nodeId'), '保存成功！');
+        Response::success($nodeId, '保存成功！');
     }
 
-    function actionDeleteNodeRelation($args) {
+    /**
+     * 删除节点
+     * @author benzhan
+     * @param unknown $args
+     */
+    function actionDeleteNode($args) {
         $rules = array(
             'nodeId' => 'int',
-            'parentNodeId' => 'int'
         );
         Param::checkParam($rules, $args);
         
+        // 检查是不是有多层子节点
         $objRMenu = new RMenuNode();
-        $objRMenu->deleteNodeRelation($args);
-        Response::success(array(), '保存成功！');
+        $where = array('parentNodeId' => $args['nodeId']);
+        $subNodeIds = $objRMenu->objHelper->getCol($where, array('_field' => 'nodeId'));
+        
+        if ($subNodeIds) {
+            $where = array('parentNodeId' => $subNodeIds);
+            $subNodeIds = $objRMenu->objHelper->getCol($where, array('_field' => 'nodeId'));
+            if ($subNodeIds) {
+                Response::error(CODE_PARAM_ERROR, '删除失败，请先删除孙子节点');
+            }
+        }
+        
+        $where = array('parentNodeId' => $args['nodeId']);
+        $objRMenu->objHelper->delObject($where);
+        
+        $where = array('nodeId' => $args['nodeId']);
+        $objRMenu->objHelper->delObject($where);
+        
+        $objCMenu = new CMenuNode();
+        $subNodeIds[] = $args['nodeId'];
+        $where = array('nodeId' => $subNodeIds);
+        $objCMenu->objHelper->delObject($where);
+        
+        Response::success(array(), '删除成功！');
     }
     
     function actionFixPos($args) {
