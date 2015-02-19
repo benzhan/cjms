@@ -3,7 +3,6 @@
 /**
  * 首页
  * @author benzhan
- *
  */
 class DefaultController extends Controller {
 
@@ -23,7 +22,7 @@ class DefaultController extends Controller {
      * @author benzhan
      * @param array $args
      */
-    function actionTree(array $args) {
+    function actionMenuTree(array $args) {
         $rules = array(
             'nodeId' => 'int'
         );
@@ -40,6 +39,8 @@ class DefaultController extends Controller {
         
         $node = array('items' => $node);
         $this->tpl->assign('tree', array('items' => $node));
-        $this->tpl->display('tree');
+        $this->tpl->display('menu_tree');
     }
+    
+    
 }

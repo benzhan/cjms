@@ -127,19 +127,7 @@ class Template {
     }
 
     public function getPath($path) {
-        $path = explode("_", $path);
-        $num = count($path);
-        if ($num == 1) {
-            return ROOT_PATH . "views" . DIRECTORY_SEPARATOR . $path[0] . ".html";
-        } elseif ($num > 1) {
-            $templatePath = '';
-            $templatePath = $path[$num - 1];
-            array_pop($path);
-            $templatePath = ROOT_PATH . implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $templatePath . ".html";
-            return $templatePath;
-        } else {
-            return false;
-        }
+        return ROOT_PATH . "views" . DIRECTORY_SEPARATOR . $path . ".html";
     }
 
     public function display($templates = array()) {

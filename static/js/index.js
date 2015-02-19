@@ -32,7 +32,7 @@ define(function(require, exports, module) {
          	   var rightUrl = $(this).attr('rightUrl');
          	   if (!leftUrl) {
          		   var nodeId = $(this).attr('nodeId');
-         		   leftUrl = SITE_URL + 'default/tree?nodeId=' + nodeId;
+         		   leftUrl = SITE_URL + 'default/menuTree?nodeId=' + nodeId;
          	   }
          	   $('#tree').attr('src', leftUrl);
          	   

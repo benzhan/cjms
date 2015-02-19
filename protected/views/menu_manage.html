@@ -102,7 +102,7 @@
 	<script src="<?=SITE_URL?>/static/js/libs/skytree/Script/Lang/cn.js"></script>
 
 	<script>
-		seajs.use('js/menu.js', function(page) {
+		seajs.use('js/menu_manage.js', function(page) {
 			page.init(<?= json_encode($tree)?>);
 		});
 	</script>

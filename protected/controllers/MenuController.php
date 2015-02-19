@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * 菜单
+ * @author benzhan
+ */
 class MenuController extends Controller {
     
     /**
@@ -14,7 +18,7 @@ class MenuController extends Controller {
         $node['items'] = $items;
         $node = array('items' => $node);
         $this->tpl->assign('tree', array('items' => $node));
-        $this->tpl->display('menu');
+        $this->tpl->display('menu_manage');
     }
     
     /**
@@ -113,7 +117,7 @@ class MenuController extends Controller {
     }
     
     /**
-     *  @todo 有bug
+     * 保存节点的位置
      * @author benzhan
      * @param unknown $args
      */
