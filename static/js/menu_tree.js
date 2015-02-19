@@ -3,6 +3,23 @@ define(function(require, exports, module) {
 	
 	exports.init = init;
 	
+	var M = {
+		getChildsByPId : function(tree, sender) {
+			var url = lib.url + "menu/getChildsByPId";
+		    var data = { nodeId : sender.data.nodeId };
+		    lib.post(url, data, function(objResult) {
+		    	if (objResult.result) {
+	                tree.getNode(sender.index).eleSub.innerHTML = "";
+	                tree.transDataing = true;
+	                tree.transData(sender.index, objResult.data);
+	                tree.transDataing = false;
+	            } else {
+	                lib.showTip(objResult.msg);
+	            }
+		    });
+		}
+	};
+	
 	var C = {
         init : function() {
 
@@ -35,23 +52,11 @@ define(function(require, exports, module) {
 	
 	function setOnFocus(tree, sender) {
 	    sender.onfocus = function(sender){
-	        var leftUrl = getValidUrl(sender.data.leftUrl);
+	        var leftUrl = sender.data.leftUrl;
 	        leftUrl && $('#tree', parent.document).attr('src', leftUrl);
 	        
-	        var rightUrl = getValidUrl(sender.data.rightUrl);
+	        var rightUrl = sender.data.rightUrl;
 	        rightUrl && $('#main', parent.document).attr('src', rightUrl);
-	    }
-	}
-
-	function getValidUrl(url) {
-	    if (!url) { return false; }
-	    if (/^http[s]*:\/\//.test(url)) {
-	        return url;
-	    } else if (/^javascript:/.test(url)) {
-	        eval(url);
-	        return false;
-	    } else {
-	        return SITE_URL + url;
 	    }
 	}
 
@@ -61,29 +66,7 @@ define(function(require, exports, module) {
 	        return false;
 	    }
 	    
-	    var data = {'showCgAndSc': true};
-	    data.id = sender.value;
-	    data.startIndex = 0;
-	    data.itemNum = treeCfg.itemNum;
-	    
-	    var $loadingDiv = $.getLoadingDiv();
-	    var option = {
-	        'type': 'get',
-	        'dataType': 'json',
-	        'data': data,
-	        'url': './menuManage.ajax.php?diy=1&act=getChildsByPId&pId=' + sender.data.nodeId,
-	        'success': function(objData) {
-	            if (objData.ret) {
-	                tree.getNode(sender.index).eleSub.innerHTML = "";
-	                tree.transData(sender.index, objData.data);
-	            } else {
-	                redirectLogin(objData);
-	            }
-	            $loadingDiv && $loadingDiv.end();
-	        }
-	    };
-
-	    $.ajax(option);
+	    M.getChildsByPId(tree, sender);
 	}
 	
 	C.init();
