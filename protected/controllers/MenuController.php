@@ -112,16 +112,19 @@ class MenuController extends Controller {
         Response::success(array(), '删除成功！');
     }
     
-    function actionFixPos($args) {
+    /**
+     *  @todo 有bug
+     * @author benzhan
+     * @param unknown $args
+     */
+    function actionSyncPos($args) {
         $rules = array(
             'json' => 'string',
         );
         Param::checkParam($rules, $args);
         
-        $json = $_REQUEST['json'];
-        $json = str_replace("\\", '', $json);
+        $json = $args['json'];
         $objJson = json_decode($json, true);
-
         if (!$objJson) {
             exit(json_encode(array('ret' => true, 'msg' => '保存成功！')));
         }
@@ -141,7 +144,8 @@ class MenuController extends Controller {
             
             //获取旧的关系
             $pIds = array_keys($newMap);
-            $menuDatas = $this->_oMenuNode->getChildByPid($pIds);
+            $objVMenu = new VMenuNode();
+            $menuDatas = $objVMenu->getChildByPid($pIds);
             
             foreach ($menuDatas as $data) {
                 $oldMap[$data['parentNodeId']][$data['nodeId']] = $data['sortPos'];
@@ -161,7 +165,7 @@ class MenuController extends Controller {
                         $addData[] = $args;
                     }
                 }
-            }
+            } 
             
             //对比旧新数据，得到删除数据
             foreach ($oldMap as $pId => $data) {
@@ -175,16 +179,19 @@ class MenuController extends Controller {
             }
             
             
+            $objRMenu = new RMenuNode();
             //插入不同的数据
             foreach ($updateData as $data) {
-                $this->_oMenuNode->saveNodeRelation($data['args'], $data['where']);
+                $objRMenu->saveNodeRelation($data['args'], $data['where']);
             }
-            $addData && $this->_oMenuNode->addNodeRelation($addData);
-            $deleteData && $this->_oMenuNode->deleteNodeRelation($where);
+            
+            $addData && $objRMenu->objHelper->replaceObjects2($addData);
+            $deleteData && $objRMenu->deleteNodeRelation($where);
+            
         } catch (Exception $ex) {
-            exit(json_encode(array('ret' => false, 'msg' => '保存失败！' . $ex->getMessage())));
+            Response::error(CODE_INTER_ERROR, '保存失败！', $ex->getMessage());
         }
         
-        return array('ret' => true, 'msg' => '保存成功！');
+        Response::success(compact('addData', 'deleteData', 'updateData'), '保存成功！');
     }
 }

@@ -73,12 +73,22 @@ define(function(require, exports, module) {
 	        lib.post(url, data, function(objResult) {
 	            lib.showTip(objResult.msg);
 	        });
+		},
+		syncPos : function(json) {
+			var url = lib.url + "menu/syncPos";
+	        var data = {};
+	        data.json = json;
+			
+	        lib.post(url, data, function(objResult) {
+	            lib.showTip(objResult.msg);
+	        });
 		}
 	};
 	
 	var C = {
         init : function() {
         	$('#saveNode').on(BDY.click, M.saveNode);
+        	$('#syncPos').on(BDY.click, syncPos);
         }
 	}
 	
@@ -162,87 +172,64 @@ define(function(require, exports, module) {
         tree.editEventCanceled = true;
     }
     
+    function syncPos() {
+        var data = {};
+        var child = objTree.rootNode.firstChild;
+        var json = [];
+
+        while (child) {
+            while (child) {
+            	var childJson = getChildJson(child);
+            	childJson && json.push(childJson);
+                if (child.firstChild) {
+                    child = child.firstChild;
+                } else {
+                    break;
+                }
+            }
+
+            if (child.nextSibling) {
+                child = child.nextSibling;
+            } else {
+                while (child.parent) {
+                    if (child.parent.nextSibling) {
+                        child = child.parent.nextSibling;
+                        break;
+                    } else {
+                        child = child.parent.value && child.parent;
+                    }
+                }
+            }
+        }
+
+        json = '[' + json.join(',') + ']';
+        M.syncPos(json);
+    };
+
+    function getChildJson(node) {
+    	if (!node.value) {
+    		return '';
+    	}
+    	
+        var parent = node.parent || node;
+        var json = '{';
+        json += '"parentNodeId":' + (parent.value || 0) + ',';
+        json += '"nodeId":' + node.value + ',';
+
+        var pos = 1;
+        while (node.previousSibling) {
+            node = node.previousSibling;
+            pos++;
+        }
+        json += '"sortPos":' + pos + '}';
+        return json;
+    }
+    
 	
 	C.init();
 	
 	function init(tempData) {
 		V.init(tempData);
-	}
-
-	function initTree() {
-	    // SkyTree组件的根目录
-	    objTree = new SkyTree('objTree', 'tv_Nav'); // Declare and create a skytree
-	    objTree.singleExpand = false;
-	    // 在删除之前是否要提示，这个我们可以自己做提示，不需要用它自带的
-	    objTree.hintBeforeDelete = false;
-	    objTree.expandLevel = 1; // 一开始展开的层次
-	    objTree.initialize(); // initialize the object
-
-	    objTree.beforeinsert = beforeinsert;
-	    objTree.afterinsert = afterinsert;
-	    objTree.beforeedit = beforeedit;
-	    objTree.beforeExpand = beforeExpand;
-	    objTree.beforedelete = beforedelete;
-
-	    // 标识正在加载数据
-	    var dataLoading = false;
-	    
-	    objTree.saveNode = saveNode;
-	    objTree.sysTree = sysTree;
-	    return objTree;
-
-
-	    function sysTree() {
-	        var data = {};
-	        var child = objTree.rootNode.firstChild;
-	        var json = [];
-
-	        while (child) {
-	            while (child) {
-	                json.push(getChildJson(child));
-	                if (child.firstChild) {
-	                    child = child.firstChild;
-	                } else {
-	                    break;
-	                }
-	            }
-
-	            if (child.nextSibling) {
-	                child = child.nextSibling;
-	            } else {
-	                while (child.parent) {
-	                    if (child.parent.nextSibling) {
-	                        child = child.parent.nextSibling;
-	                        break;
-	                    } else {
-	                        child = child.parent.value && child.parent;
-	                    }
-	                }
-	            }
-	        }
-
-	        data.json = '[' + json.join(',') + ']';
-
-	        data.act = "fixPos";
-	        $.post(url, data, function(objResult) {
-	            alert(objResult.msg);
-	        }, 'json');
-	    };
-
-	    function getChildJson(node) {
-	        var parent = node.parent || node;
-	        var json = '{';
-	        json += '"parentNodeId":' + (parent.value || 0) + ',';
-	        json += '"nodeId":' + node.value + ',';
-
-	        var pos = 1;
-	        while (node.previousSibling) {
-	            node = node.previousSibling;
-	            pos++;
-	        }
-	        json += '"sortPos":' + pos + '}';
-	        return json;
-	    }
 	}
 	
 });
