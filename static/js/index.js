@@ -1,5 +1,26 @@
 define(function(require, exports, module) {
-	var lib = require('js/libs/library.js');
+	var lib = require('lib'), tpl = require('tpl');
+	
+	exports.setNodeId = function(nodeId) {
+		lib.setParam('nodeId', nodeId);
+		M.getSiteMap();
+	}
+	
+	var M = {
+		getSiteMap : function() {
+			var url = lib.url + "default/getSiteMap";
+			var data = {};
+			data.nodeId = lib.getParam('nodeId');
+			lib.post(url, data, function(objResult) {
+				if (objResult.result) {
+					var html = tpl.render("temp_breadcrumb", objResult);
+					$('#breadcrumb').html(html);
+				} else {
+					lib.showTip(objResult.msg);
+				}
+			});
+		}
+	};
 	
 	var C = {
         init : function() {
@@ -27,11 +48,15 @@ define(function(require, exports, module) {
         },
         bindNavEvent : function() {
         	 // 点击展现数据
-            $('#navbar').on(BDY.click, "[nodeId]", function() {
+            $('body').on(BDY.click, "[nodeId]", function() {
          	   var leftUrl = $(this).attr('leftUrl');
          	   var rightUrl = $(this).attr('rightUrl');
+         	   var nodeId = $(this).attr('nodeId');
+         	   
+         	   lib.setParam('nodeId', nodeId);
+         	   M.getSiteMap();
+         	   
          	   if (!leftUrl) {
-         		   var nodeId = $(this).attr('nodeId');
          		   leftUrl = SITE_URL + 'default/menuTree?nodeId=' + nodeId;
          	   }
          	   $('#tree').attr('src', leftUrl);

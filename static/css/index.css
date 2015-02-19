@@ -24,7 +24,10 @@
 #copyUrlDiv {
 	position: absolute;
 	right: 0px;
-	top: 0px;
+	top: 8px;
+}
+
+#copyUrl {
 	padding: 8px 15px;
 }
 

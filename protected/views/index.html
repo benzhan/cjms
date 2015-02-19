@@ -83,12 +83,22 @@
 		    </div>
 		</div>
 		
-	    <div id="mainDiv">
+	    <div id="mainDiv"> 
+	        <script type="text/html" id="temp_breadcrumb">
+            <% for (var i = 0; i < data.length; i++) { %>
+            <%     var node = data[i]; %>
+            <%     if (i < data.length -1) { %>
+                <li  nodeId="<%= node['nodeId'] %>" leftUrl="<%= node['leftUrl'] %>" rightUrl="<%= node['rightUrl'] %>">
+                    <a href="javascript:void(0);"><%= node['nodeName'] %></a>
+                </li>
+            <%     } else { %>
+                <li class="active"><%= node['nodeName'] %></li>
+            <%     }  %>
+            <% } %>
+	        </script>
 	        <div id="breadcrumbDiv">
 				<ol class="breadcrumb" id="breadcrumb">
-					<li><a href="#">Home</a></li>
-					<li><a href="#">Library</a></li>
-					<li class="active">Data</li>
+					<li class="active">首页</li>
 				</ol>
 				<div id="copyUrlDiv">
 				    <a href="#" id="copyUrl">复制URL</a>

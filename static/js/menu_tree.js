@@ -57,6 +57,10 @@ define(function(require, exports, module) {
 	        
 	        var rightUrl = sender.data.rightUrl;
 	        rightUrl && $('#main', parent.document).attr('src', rightUrl);
+	        
+	        top.seajs.use('js/index.js', function(page) {
+	        	page.setNodeId(sender.data.nodeId);
+	        });
 	    }
 	}
 

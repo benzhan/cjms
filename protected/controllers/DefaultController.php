@@ -28,18 +28,41 @@ class DefaultController extends Controller {
         );
         Param::checkParam($rules, $args);
         $nodeId = $args['nodeId'];
-        
+    
         $objMenu = new VMenuNode();
         $node = $objMenu->getNodeById($nodeId);
-        
+    
         $items = $objMenu->getDirectSubNode($nodeId);
         if ($items) {
             $node['items'] = $items;
         }
-        
+    
         $node = array('items' => $node);
         $this->tpl->assign('tree', array('items' => $node));
         $this->tpl->display('menu_tree');
+    }
+    
+    /**
+     * 获取默认的tree结构
+     * @author benzhan
+     * @param array $args
+     */
+    function actionGetSiteMap(array $args) {
+        $rules = array(
+            'nodeId' => 'int'
+        );
+        Param::checkParam($rules, $args);
+        
+        $nodeId = $args['nodeId'];
+        $objMenu = new VMenuNode();
+        $siteMap = array();
+        do {
+            $node = $objMenu->objHelper->getOneObject(compact('nodeId'));
+            array_unshift($siteMap, $node);
+            $nodeId = $node['parentNodeId'];
+        } while($nodeId);
+        
+        Response::success($siteMap);
     }
     
     
