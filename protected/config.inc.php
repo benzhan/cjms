@@ -1,5 +1,7 @@
 <?php
 
+require_once ROOT_PATH . "globalCode.inc.php";
+
 // 设置时区
 date_default_timezone_set('PRC');
 
@@ -11,10 +13,8 @@ define('TIME', time());
 define('NOW', date('Y-m-d H:i:s', TIME));
 define('TODAY', date('Y-m-d', TIME));
 
-
 $localIps = array(
     '127.0.0.1',
-    '192.168.1.104'
 );
 
 $devIps = array(
@@ -37,8 +37,6 @@ if (in_array($addr, $localIps) || empty($addr)) {
     define('DEBUG', true);
 }
 
-require_once ROOT_PATH . "globalCode.inc.php";
-
 if (ENV != ENV_FORMAL) {
     //sdk数据库配置
     $GLOBALS['dbInfo']['default'] = array(
@@ -59,7 +57,6 @@ if (ENV != ENV_FORMAL) {
     // 站点URL，最后不带斜杠
     define('SITE_DIR', '/cjms/');
 } else {
-
     
     // 站点URL，最后不带斜杠
     define('SITE_DIR', '/cjms.com/');
@@ -68,22 +65,9 @@ if (ENV != ENV_FORMAL) {
 define('SITE_NAME', 'CJ管理平台');
 define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST'] . SITE_DIR);
 
-
-/* 
-$GLOBALS['dbInfo']['default'] = array(
-    'enable' => true,
-    'dbType' => 'mysqli',
-    'dbHost' => '123.57.34.130',
-    'dbPort' => 3306,
-    'dbName' => 'lhc',
-    'dbUser' => 'root',
-    'dbPass' => 'root',
-);
- */
-
-define("TYPE_MODULE_CALL", "yb_mobile_modulecall");
-define("TYPE_SELF_CALL", "yb_mobile_selfcall");
-define("TYPE_CUSTOM_LOG", "yb_mobile_customlog");
+define("TYPE_MODULE_CALL", "cjms_web_modulecall");
+define("TYPE_SELF_CALL", "cjms_web_selfcall");
+define("TYPE_CUSTOM_LOG", "cjms_web_customlog");
 
 
 //end of script
