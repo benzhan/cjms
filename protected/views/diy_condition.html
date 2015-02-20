@@ -1,0 +1,108 @@
+
+<style>
+#advCondition, #advConditionForm > *, #normalCondition > * { margin:8px; }
+#advConditionForm, #customCondition { margin-bottom:0; }
+#addCondition { margin-left:16px; }
+#advCondition .panel-body { padding:5px; }
+</style>
+
+<!-- 普通查询模块 -->
+<form class="form-inline" id="normalCondition">
+<? foreach ($where as $value) { ?>
+  <div class="form-group">
+    <label for="<?= $value[0] ?>" fieldName="<?= $value[0] ?>"><?= $fields[$value[0]]['fieldCName'] ?>:</label>
+    <div class="input-group">
+      <div class="input-group-addon" opt="<?= $value[1] ?>"><?= $GLOBALS['diy']['opts'][$value[1]] ?></div>
+      <input type="text" class="form-control input-sm" value="<?= $value[2] ?>" >
+      
+      <? if (isset($value[3])) { ?>
+      <div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
+      <input type="text" class="form-control input-sm" value="<?= $value[3] ?>" >
+      <? } ?>
+    </div>
+  </div>
+<? } ?>
+  <button type="button" class="btn btn-primary btn-sm">查询</button>
+  <button type="button" class="btn btn-link btn-sm">高级查询>></button>
+</form>
+
+<!-- 高级查询模块 -->
+<div class="panel panel-primary" id="advCondition">
+  <div class="panel-heading">
+      当前条件 ()
+  </div>
+  <div class="panel-body">
+    <form class="form-inline" id="advConditionForm">
+	<? foreach ($where as $value) { ?>
+	  <div class="form-group">
+	    <label for="<?= $value[0] ?>" fieldName="<?= $value[0] ?>"><?= $fields[$value[0]]['fieldCName'] ?>:</label>
+	    <div class="input-group">
+	      <div class="input-group-addon" opt="<?= $value[1] ?>"><?= $GLOBALS['diy']['opts'][$value[1]] ?></div>
+	      <input type="text" class="form-control input-sm" value="<?= $value[2] ?>" >
+	      <? if (isset($value[3])) { ?>
+	      <div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
+	      <input type="text" class="form-control input-sm" value="<?= $value[3] ?>" >
+	      <? } ?>
+	      
+	      <div class="input-group-addon" style="border-left: 0;">
+	      	<a class="glyphicon glyphicon-remove" aria-hidden="true" href="javascript:void(0)"></a>
+	      </div>
+	      
+	    </div>
+	  </div>
+	<? } ?>
+	  <button type="button" class="btn btn-primary btn-sm">查询</button>
+	  <button type="button" class="btn btn-link btn-sm">普通查询>></button>
+	</form>
+  </div>
+  <div class="panel-footer">
+    <form class="form-inline" id="customCondition">
+      <!-- 选择字段 -->
+      <select class="form-control input-sm" id="fieldName">
+      <? foreach ($fields as $field) { ?>
+         <option value="<?= $field['fieldName'] ?>"><?= $field['fieldCName'] ?></option>
+      <? } ?>
+      </select>
+      
+      <select class="form-control input-sm" id="opt">
+       <? foreach ($GLOBALS['diy']['opts'] as $key => $opt) { ?>
+         <option value="<?= $key ?>"><?= $opt ?></option>
+      <? } ?>
+      </select>
+      
+      <div class="input-group">
+	    <input type="text" class="form-control input-sm" id="<?= $value[2] ?>" >
+      	<div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
+      	<input type="text" class="form-control input-sm" id="<?= $value[3] ?>" >
+	  </div>
+
+      <button type="button" class="btn btn-primary btn-sm" id="addCondition">添加条件</button>
+    </form>
+  </div>
+</div>
+
+<script>
+
+if (window.seajs) {
+    seajs.use('css/bootstrap.min.css');
+	seajs.use('js/menu_tree.js', function(page) {
+		page.init(<?= json_encode($tree)?>);
+	});
+} else {
+	var SITE_URL = "/cjms/";
+	var script = document.createElement("script");
+	script.src = SITE_URL + "static/js/libs/seajs.utils.js";
+	script.charset = "utf-8";
+	script.onload = function() {
+		seajs.use('css/bootstrap.min.css');
+		seajs.use('js/menu_tree.js', function(page) {
+			page.init(<?= json_encode($tree)?>);
+		});
+	};
+
+	var header = document.getElementsByTagName("head")[0];
+	header.insertBefore(script, header.firstChild);
+}
+</script>
+
+

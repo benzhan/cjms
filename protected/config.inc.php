@@ -38,13 +38,23 @@ if (in_array($addr, $localIps) || empty($addr)) {
 }
 
 if (ENV != ENV_FORMAL) {
-    //sdk数据库配置
+
     $GLOBALS['dbInfo']['default'] = array(
         'enable' => true,
         'dbType' => 'mysqli',
         'dbHost' => '127.0.0.1',
         'dbPort' => 3306,
         'dbName' => 'Web',
+        'dbUser' => 'root',
+        'dbPass' => 'root',
+    );
+    
+    $GLOBALS['dbInfo']['Report'] = array(
+        'enable' => true,
+        'dbType' => 'mysqli',
+        'dbHost' => '127.0.0.1',
+        'dbPort' => 3306,
+        'dbName' => 'Report',
         'dbUser' => 'root',
         'dbPass' => 'root',
     );

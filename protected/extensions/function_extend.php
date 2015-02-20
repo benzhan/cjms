@@ -47,6 +47,22 @@ function arrayFilter(array $array, $keys) {
     return $tData;
 }
 
+/**
+ * 格式化数组为 array(key => value)
+ * @author benzhan
+ * @param array $array
+ * @param unknown $key
+ * @return multitype:unknown
+ */
+function arrayFormatKey(array $array, $key) {
+    $tData = array();
+    foreach ($array as $value) {
+        $tData[$value[$key]] = $value;
+    }
+    
+    return $tData;
+}
+
 // 自动包含类
 function myAutoload($className) {
     if (class_exists($className, false) || interface_exists($className, false)) {return false;}

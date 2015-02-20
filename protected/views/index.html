@@ -117,7 +117,9 @@
 	<script src="static/js/libs/jqext.js"></script>
 	<script src="static/js/libs/ZeroClipboard.js"></script>
 	<script>
-		seajs.use('js/index.js');
+		seajs.use('js/index.js', function(page) {
+			page.init();
+		});
 	</script>
 </body>
 </html>

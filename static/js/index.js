@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
 	var lib = require('lib'), tpl = require('tpl');
 	
+	exports.init = init;
 	exports.setNodeId = function(nodeId) {
 		lib.setParam('nodeId', nodeId);
 		M.getSiteMap();
@@ -116,6 +117,23 @@ define(function(require, exports, module) {
             
             $('[data-toggle="tooltip"]').tooltip();
         }
+	};
+	
+	var V = {
+		init : function() {
+			var nodeId = lib.getParam('nodeId');
+			var $node = $('[nodeId="' + nodeId + '"]');
+			if ($node.length) {
+				$node.trigger(BDY.click);
+			} else {
+				// 后续完善
+				
+			}
+		}
+	};
+	
+	function init() {
+		V.init();
 	}
 	
 	C.init();
