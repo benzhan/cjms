@@ -1,10 +1,13 @@
 <div id="condition">
 
 <style>
+#advCondition { display:none; }
 #advCondition, #advConditionForm > *, #normalCondition > * { margin:8px; }
 #advConditionForm, #customCondition { margin-bottom:0; }
-#addCondition { margin-left:16px; }
 #advCondition .panel-body { padding:5px; }
+#advCondition #switchToAdv { display:none; }
+.sortable-placeholder { background:#f5f5f5; width:220px;height:30px; }
+#normalCondition #switchToNormal, #normalCondition .adv-remove { display:none; }
 </style>
 
 <script id="temp_form_inline" type="text/html">
@@ -14,17 +17,14 @@ for (var key in where) {
     include('temp_form_group', data);
 } 
 %>
-  <button type="button" class="btn btn-primary btn-sm">查询</button>
-<% if (isNormal) { %>
-  <button type="button" class="btn btn-link btn-sm">高级查询>></button>
-<% } else { %>
-  <button type="button" class="btn btn-link btn-sm">普通查询>></button>
-<% } %>
+	<button type="button" class="btn btn-primary btn-sm" id="search">查询</button>
+	<button type="button" class="btn btn-link btn-sm" id="switchToNormal">普通查询>></button>
+	<button type="button" class="btn btn-link btn-sm" id="switchToAdv">高级查询>></button>
 </script>
 
 <script id="temp_form_group" type="text/html">
-  <div class="form-group">
-    <label for="<%= fieldName %>" fieldName="<%= fieldName %>" opt="<%= opt %>"><%= fieldCName %>:</label>
+  <div class="form-group" fieldName="<%= fieldName %>" opt="<%= opt %>">
+    <label for="<%= fieldName %>"><%= fieldCName %>:</label>
     <div class="input-group">
       <div class="input-group-addon"><%= optCName %></div>
       <input type="text" class="form-control input-sm" fieldType="<%= fieldType %>" value="<%= value1 %>" >
@@ -34,7 +34,7 @@ for (var key in where) {
       <input type="text" class="form-control input-sm" fieldType="<%= fieldType %>" value="<%= value2 %>" >
       <% } %>
       
-      <div class="input-group-addon" style="border-left: 0;">
+      <div class="input-group-addon adv-remove" style="border-left: 0;">
       	<a class="glyphicon glyphicon-remove" aria-hidden="true" href="javascript:void(0)"></a>
       </div>
 
@@ -54,9 +54,6 @@ for (var key in where) {
   </div>
   <div class="panel-body">
     <form class="form-inline" id="advConditionForm">
-    
-	  <button type="button" class="btn btn-primary btn-sm">查询</button>
-	  <button type="button" class="btn btn-link btn-sm">普通查询>></button>
 	  
 	</form>
   </div>

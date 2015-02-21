@@ -676,13 +676,24 @@ define(function(require, exports, module) {
         }
     }
     
+    function _showMsg(type, msg, timeout) {
+    	require.async(['js/libs/messenger.min.js', 'css/messenger.css', 'css/messenger-theme-future.css'], function() {
+        	Messenger().post({
+        		message: msg,
+                type: type,
+                showCloseButton: true,
+                hideAfter: timeout / 1000,
+        	});
+        });
+    }
+    
     function showErrorTip(msg, timeout) {
     	if (!msg) { return; }
         timeout = timeout || 3000;
         if (window.DuowanUi && DuowanUi.showErrorTip) {
             DuowanUi.showErrorTip(msg, timeout);
         } else {
-            alert(msg);
+        	_showMsg('error', msg, timeout);
         }
     }
     
@@ -692,7 +703,7 @@ define(function(require, exports, module) {
         if (window.DuowanUi && DuowanUi.showTip) {
             DuowanUi.showTip(msg, timeout);
         } else {
-            alert(msg);
+        	_showMsg('info', msg, timeout);
         }
     }
     

@@ -2,6 +2,7 @@ define(function(require, exports, module) {
 	var lib = require('lib'), tpl = require('tpl');
 	
 	require('jquery');
+	require('jquery-ui');
 	require('datetimepicker');
 	
 	exports.init = init;
@@ -13,19 +14,23 @@ define(function(require, exports, module) {
 	var C = {
         init : function() {
         	C.initCustomCondition();
+        	C.initDocumentEvent();
         	
-        	$(document).on(
-				'focus.datetimepicker.data-api click.datetimepicker.data-api',
-				'[fieldType="datetime"]',
-				C.initDatetimePicker
-			);
-			
-			$(document).on(
-				'focus.datetimepicker.data-api click.datetimepicker.data-api',
-				'[fieldType="date"]',
-				C.initDatetimePicker
-			);
-			
+        	$('#condition').on(BDY.click, '#search', function() {
+				var $groups = $(this).parent().find('.form-group');
+				var where = [];
+				for (var i = 0; i < $groups.length; i++) {
+					var $group = $($groups[i]);
+					var fieldName = $group.attr('fieldName');
+					var opt = $group.attr('opt');
+					var $controls = $group.find('.form-control');
+					where[i] = [fieldName, opt];
+					for (var j = 0; j < $controls.length; j++) {
+						where[i].push($($controls[j]).val());
+					}
+				}
+				lib.setParam('where', JSON.stringify(where));
+			})
         },
         initCustomCondition : function() {
         	// 添加自定义条件
@@ -65,6 +70,32 @@ define(function(require, exports, module) {
         	$('#advConditionForm').on(BDY.click, '.glyphicon-remove', function() {
         		$(this).parents('.form-group').remove();
         	});
+        	
+        	// 排序自定义条件s
+        	$('#advConditionForm').sortable({placeholder: "form-group sortable-placeholder"});
+        },
+        initDocumentEvent : function() {
+        	$('#condition').on(
+				'focus.datetimepicker.data-api click.datetimepicker.data-api',
+				'[fieldType="datetime"]',
+				C.initDatetimePicker
+			);
+			
+			$('#condition').on(
+				'focus.datetimepicker.data-api click.datetimepicker.data-api',
+				'[fieldType="date"]',
+				C.initDatetimePicker
+			);
+			
+			$('#condition').on(BDY.click, '#switchToNormal', function() {
+				$('#normalCondition').html($('#advConditionForm > *'));
+				$('#normalCondition').show();
+				$('#advCondition').hide();
+			}).on(BDY.click, '#switchToAdv', function() {
+				$('#advConditionForm').html($('#normalCondition > *'));
+				$('#normalCondition').hide();
+				$('#advCondition').show();
+			});
         },
         initDatetimePicker : function(e) {
 			var $this = $(this);
@@ -111,10 +142,18 @@ define(function(require, exports, module) {
 			}
 			data.where = tempData;
 			var html = tpl.render('temp_form_inline', data);
-			if (data.isNormal) {
-				$('#normalCondition').html(html);		
-			} else {
-				$('#advConditionForm').html(html);
+			$('#normalCondition').html(html);
+			
+			var where = lib.getParam('where');
+			if (where) {
+				where = JSON.parse(where);
+				for (var i in where) {
+					var value = where[i];
+					var $group = $('[fieldName="' + value[0] + '"][opt="' + value[1] + '"]');
+					$group.find('.form-control').each(function(index) {
+						$(this).val(value[index + 2]);
+					});
+				}
 			}
 		}
 	}

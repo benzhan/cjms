@@ -1242,6 +1242,7 @@ BDY.debug = true;
 seajs.config({
     alias : {
         'jquery' : 'js/libs/jquery-1.10.2.js',
+        'jquery-ui' : 'js/libs/jquery-ui.min.js',
         'bootstrap' : BDY.debug ? 'js/libs/bootstrap.js' : 'js/libs/bootstrap.min.js',
         'datetimepicker' : 'js/libs/bootstrap-datetimepicker.min.js',
         'tpl' : 'js/libs/template.js',
