@@ -53,7 +53,7 @@ define(function(require, exports, module) {
         	    
         	    data['value1'] = $('[name=value1]').val();
         	    var $value2 = $('[name=value2]');
-        	    if ($value2.length) {
+        	    if (data['opt'] == ':') {
         	    	data['value2'] = $value2.val();
         	    }
         	    
@@ -64,6 +64,16 @@ define(function(require, exports, module) {
         	    } else {
         	    	$('#advConditionForm').prepend(html);
         	    }
+        	});
+        	
+        	$('#opt').on('change', function() {
+        		var value = $(this).val();
+        		$('#customCondition .input-group > *').hide();
+        		if (value == ':') {
+        			$('#customCondition .input-group > *').show();
+        		} else {
+        			$('[name=value1]').show();
+        		}
         	});
         	
         	// 删除自定义条件

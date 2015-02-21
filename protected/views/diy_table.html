@@ -1,0 +1,100 @@
+<div id="table" style="margin:10px;">
+	<table class="table table-hover table-striped" style="margin-bottom: 0;">
+      <thead>
+        <tr>
+          <? foreach ($fieldNames as $fieldName => $sortKey) { 
+                     $field = $other['fields'][$fieldName];  
+                     if ($other['showGroupBy'] && !$field['cal'] && !$field['groupby'] && ($other['isMail'] || $other['hideNoGroupBy'])) { continue; }
+             ?>
+            <th  fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? "sortKey=" . $sortKey : '' ?>>
+                <a class="text"><?=$field['fieldCName']?></a>
+                <?=$field['icon']?>
+                <? if ($other['keyWord']['_sortKey'] == $sortKey) { ?>
+                <?     if ($other['keyWord']['_sortDir'] == 'DESC') { ?>
+                <span style="color: red;" id="arrow">↓</span>
+                <?     } else { ?>
+                <span style="color: red;" id="arrow">↑</span>
+                <?     } ?>
+                <? } ?>
+            </th>
+          <? } ?>
+        </tr>
+      </thead>
+      <tbody>
+      <? if ($datas) { ?> 
+      <!--  数据的内容 -->
+       <?
+            foreach ($datas as $rowNum => $data) { 
+               $colNum = 0;
+       ?>
+        
+        <tr>
+            <? foreach ($data as  $fieldName =>$value) { ?>
+            <?     
+                     $className =  $colNum++ ? '' : (($rowNum & 1) ? 'td_spec1' : 'td_spec2');
+                     $field = $other['fields'][$fieldName]; 
+                     if ($other['showGroupBy']) {
+                         if (!$field['cal'] && !$field['groupby']) {
+                             //对于邮件和hideNoGroupBy的表格，不显示groupby字段
+                             if ($other['isMail'] || $other['hideNoGroupBy']) { continue; }
+                             $className .= " lightGray";
+                         }
+                     }   
+                     
+                     //合并某一列相同的行
+                     if ($mergeFieldData[$fieldName][$rowNum] === 0 ) { continue;  }  
+                     $rowSpan = $mergeFieldData[$fieldName][$rowNum] ? "rowSpan='{$mergeFieldData[$fieldName][$rowNum]}'" : '';
+            ?>
+            <td <?=$rowSpan?>><?=$value ?></td>
+            <? } ?>
+        </tr>
+        <? } ?>
+    <? } else { ?>
+        <!--  没数据的情况 -->
+        <tr class="tr_spec">
+            <td class="td td_spec1">没有数据</td>
+        </tr>
+    <? } ?>
+      </tbody>
+    </table>
+    
+    <nav>
+      <ul class="pagination">
+        <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+      </ul>
+    </nav>
+    
+</div>
+
+<script>
+(function() {
+	function init() {
+		seajs.use('css/bootstrap.min.css');
+		seajs.use('js/diy_table.js', function(page) {
+			page.init();
+		});
+	}
+	
+	if (window.seajs) {
+	    init();
+	} else {
+		var SITE_URL = "/cjms/";
+		var script = document.createElement("script");
+		script.src = SITE_URL + "static/js/libs/seajs.utils.js";
+		script.charset = "utf-8";
+		script.onload = init;
+
+		var header = document.getElementsByTagName("head")[0];
+		header.insertBefore(script, header.firstChild);
+	}
+})();
+
+</script>
+
+

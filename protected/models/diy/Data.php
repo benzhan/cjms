@@ -1,5 +1,4 @@
 <?php
-require_once ROOT_PATH . 'diy/common.php';
 
 class Diy_Data {
     private $_dbKey = "Report";
@@ -15,7 +14,7 @@ class Diy_Data {
      * @author benzhan
      */
     public function getTableData($args) {
-        $oConfig = new Diy_Config_Table();
+        $oConfig = new Diy_Table();
         //$fields = $oConfig->getFields($args['tableId']);
         
         //修改为只查询展现出来的字段 edit by benzhan 2012-10-23
@@ -55,7 +54,7 @@ class Diy_Data {
     }
     
     public function getTableDataNumByCount($args) {
-    	$oConfig = new Diy_Config_Table();
+    	$oConfig = new Diy_Table();
     	$fields = $oConfig->getFields($args['tableId']);
     	$fields = $this->_getCalField($fields, $args['keyWord']);
     	$sortedFields = arrayFilter((array) $args['fields'], $fields);
@@ -166,7 +165,7 @@ class Diy_Data {
         $this->_checkTableDataParam($args);
         $args['where'] = ( array ) $args['where'];
         
-        $oConfig = new Diy_Config_Table();
+        $oConfig = new Diy_Table();
         $tableInfo = $oConfig->getTableInfo($args['tableId']);
         
         $info = $this->_getTableNameInfo($tableInfo, $args['where']);
@@ -374,7 +373,7 @@ class Diy_Data {
             ) 
         );
         
-        Tool::checkCgiParam($rules, $args);
+        Param::checkParam($rules, $args);
     }
     
     /**
@@ -501,7 +500,7 @@ class Diy_Data {
      * @author benzhan
      */
     public function getDb2($tableId) {
-        $oConfig = new Diy_Config_Table();
+        $oConfig = new Diy_Table();
         $tableInfo = $oConfig->getTableInfo($tableId);
         return $this->getDb($tableInfo);
     }
