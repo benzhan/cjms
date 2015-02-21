@@ -361,6 +361,7 @@ define(function(require, exports, module) {
         if (!document.body) {
             setTimeout(init, 10);
             console.warn("webview is slow, setTimeout(init, 10)");
+            return;
         }
         
         _initEvent();

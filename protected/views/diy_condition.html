@@ -29,7 +29,7 @@
 <!-- 高级查询模块 -->
 <div class="panel panel-primary" id="advCondition">
   <div class="panel-heading">
-      当前条件 ()
+      当前条件
   </div>
   <div class="panel-body">
     <form class="form-inline" id="advConditionForm">
@@ -38,10 +38,10 @@
 	    <label for="<?= $value[0] ?>" fieldName="<?= $value[0] ?>"><?= $fields[$value[0]]['fieldCName'] ?>:</label>
 	    <div class="input-group">
 	      <div class="input-group-addon" opt="<?= $value[1] ?>"><?= $GLOBALS['diy']['opts'][$value[1]] ?></div>
-	      <input type="text" class="form-control input-sm" value="<?= $value[2] ?>" >
+	      <input type="text" class="form-control input-sm" fieldType="<?= $fields[$value[0]]['fieldType'] ?>" value="<?= $value[2] ?>" >
 	      <? if (isset($value[3])) { ?>
 	      <div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
-	      <input type="text" class="form-control input-sm" value="<?= $value[3] ?>" >
+	      <input type="text" class="form-control input-sm" fieldType="<?= $fields[$value[0]]['fieldType'] ?>" value="<?= $value[3] ?>" >
 	      <? } ?>
 	      
 	      <div class="input-group-addon" style="border-left: 0;">
@@ -82,27 +82,30 @@
 </div>
 
 <script>
-
-if (window.seajs) {
-    seajs.use('css/bootstrap.min.css');
-	seajs.use('js/menu_tree.js', function(page) {
-		page.init(<?= json_encode($tree)?>);
-	});
-} else {
-	var SITE_URL = "/cjms/";
-	var script = document.createElement("script");
-	script.src = SITE_URL + "static/js/libs/seajs.utils.js";
-	script.charset = "utf-8";
-	script.onload = function() {
+(function() {
+	function init() {
 		seajs.use('css/bootstrap.min.css');
-		seajs.use('js/menu_tree.js', function(page) {
-			page.init(<?= json_encode($tree)?>);
-		});
-	};
+		seajs.use('css/bootstrap-datetimepicker.min.css');
 
-	var header = document.getElementsByTagName("head")[0];
-	header.insertBefore(script, header.firstChild);
-}
+		seajs.use('js/diy_condition.js', function(page) {
+			page.init();
+		});
+	}
+	
+	if (window.seajs) {
+	    init();
+	} else {
+		var SITE_URL = "/cjms/";
+		var script = document.createElement("script");
+		script.src = SITE_URL + "static/js/libs/seajs.utils.js";
+		script.charset = "utf-8";
+		script.onload = init;
+
+		var header = document.getElementsByTagName("head")[0];
+		header.insertBefore(script, header.firstChild);
+	}
+})();
+
 </script>
 
 

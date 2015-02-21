@@ -1241,14 +1241,15 @@ if ('createTouch' in document) {
 BDY.debug = true;
 seajs.config({
     alias : {
-        'jquery' : 'js/libs/jquery.js',
+        'jquery' : 'js/libs/jquery-1.10.2.js',
         'bootstrap' : BDY.debug ? 'js/libs/bootstrap.js' : 'js/libs/bootstrap.min.js',
+        'datetimepicker' : 'js/libs/bootstrap-datetimepicker.min.js',
         'tpl' : 'js/libs/template.js',
         'lib' : 'js/libs/library.js',
         'treeTable' : 'js/libs/treeTable/jquery.treeTable.js'
     },
     debug : BDY.debug,
-    base : SITE_URL ? SITE_URL + '/static/' : './static/',
+    base : SITE_URL ? SITE_URL + 'static/' : './static/',
     charset : 'utf-8',
     timeout : 20000
 });
