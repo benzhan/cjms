@@ -16,6 +16,7 @@ class DiyConditionController extends Controller {
             'where' => array('array', 'nullable' => true),
         );
         Param::checkParam($rules, $args);
+        require_once ROOT_PATH . 'diyConfig.inc.php';
         
         //将当前的查询条件合并上默认的查询条件
         if (!$args['notDefault']) {
@@ -31,7 +32,7 @@ class DiyConditionController extends Controller {
         $args['fields'] = $this->_adaptFields($fields);
         
         $this->tpl->assign($args);
-        require_once ROOT_PATH . 'diyConfig.inc.php';
+        $this->tpl->assign('opts', $GLOBALS['diy']['opts']);
         $this->tpl->display('diy_condition');
     }
     

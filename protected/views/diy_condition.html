@@ -1,3 +1,4 @@
+<div id="condition">
 
 <style>
 #advCondition, #advConditionForm > *, #normalCondition > * { margin:8px; }
@@ -6,24 +7,44 @@
 #advCondition .panel-body { padding:5px; }
 </style>
 
-<!-- 普通查询模块 -->
-<form class="form-inline" id="normalCondition">
-<? foreach ($where as $value) { ?>
+<script id="temp_form_inline" type="text/html">
+<% 
+for (var key in where) { 
+    var data = where[key];
+    include('temp_form_group', data);
+} 
+%>
+  <button type="button" class="btn btn-primary btn-sm">查询</button>
+<% if (isNormal) { %>
+  <button type="button" class="btn btn-link btn-sm">高级查询>></button>
+<% } else { %>
+  <button type="button" class="btn btn-link btn-sm">普通查询>></button>
+<% } %>
+</script>
+
+<script id="temp_form_group" type="text/html">
   <div class="form-group">
-    <label for="<?= $value[0] ?>" fieldName="<?= $value[0] ?>"><?= $fields[$value[0]]['fieldCName'] ?>:</label>
+    <label for="<%= fieldName %>" fieldName="<%= fieldName %>" opt="<%= opt %>"><%= fieldCName %>:</label>
     <div class="input-group">
-      <div class="input-group-addon" opt="<?= $value[1] ?>"><?= $GLOBALS['diy']['opts'][$value[1]] ?></div>
-      <input type="text" class="form-control input-sm" value="<?= $value[2] ?>" >
+      <div class="input-group-addon"><%= optCName %></div>
+      <input type="text" class="form-control input-sm" fieldType="<%= fieldType %>" value="<%= value1 %>" >
       
-      <? if (isset($value[3])) { ?>
+      <% if (value2 !== undefined) { %>
       <div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
-      <input type="text" class="form-control input-sm" value="<?= $value[3] ?>" >
-      <? } ?>
+      <input type="text" class="form-control input-sm" fieldType="<%= fieldType %>" value="<%= value2 %>" >
+      <% } %>
+      
+      <div class="input-group-addon" style="border-left: 0;">
+      	<a class="glyphicon glyphicon-remove" aria-hidden="true" href="javascript:void(0)"></a>
+      </div>
+
     </div>
   </div>
-<? } ?>
-  <button type="button" class="btn btn-primary btn-sm">查询</button>
-  <button type="button" class="btn btn-link btn-sm">高级查询>></button>
+</script>
+
+<!-- 普通查询模块 -->
+<form class="form-inline" id="normalCondition">
+
 </form>
 
 <!-- 高级查询模块 -->
@@ -33,26 +54,10 @@
   </div>
   <div class="panel-body">
     <form class="form-inline" id="advConditionForm">
-	<? foreach ($where as $value) { ?>
-	  <div class="form-group">
-	    <label for="<?= $value[0] ?>" fieldName="<?= $value[0] ?>"><?= $fields[$value[0]]['fieldCName'] ?>:</label>
-	    <div class="input-group">
-	      <div class="input-group-addon" opt="<?= $value[1] ?>"><?= $GLOBALS['diy']['opts'][$value[1]] ?></div>
-	      <input type="text" class="form-control input-sm" fieldType="<?= $fields[$value[0]]['fieldType'] ?>" value="<?= $value[2] ?>" >
-	      <? if (isset($value[3])) { ?>
-	      <div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
-	      <input type="text" class="form-control input-sm" fieldType="<?= $fields[$value[0]]['fieldType'] ?>" value="<?= $value[3] ?>" >
-	      <? } ?>
-	      
-	      <div class="input-group-addon" style="border-left: 0;">
-	      	<a class="glyphicon glyphicon-remove" aria-hidden="true" href="javascript:void(0)"></a>
-	      </div>
-	      
-	    </div>
-	  </div>
-	<? } ?>
+    
 	  <button type="button" class="btn btn-primary btn-sm">查询</button>
 	  <button type="button" class="btn btn-link btn-sm">普通查询>></button>
+	  
 	</form>
   </div>
   <div class="panel-footer">
@@ -60,25 +65,26 @@
       <!-- 选择字段 -->
       <select class="form-control input-sm" id="fieldName">
       <? foreach ($fields as $field) { ?>
-         <option value="<?= $field['fieldName'] ?>"><?= $field['fieldCName'] ?></option>
+         <option value="<?= $field['fieldName'] ?>" fieldType="<?= $field['fieldType'] ?>" ><?= $field['fieldCName'] ?></option>
       <? } ?>
       </select>
       
       <select class="form-control input-sm" id="opt">
-       <? foreach ($GLOBALS['diy']['opts'] as $key => $opt) { ?>
+       <? foreach ($opts as $key => $opt) { ?>
          <option value="<?= $key ?>"><?= $opt ?></option>
       <? } ?>
       </select>
       
       <div class="input-group">
-	    <input type="text" class="form-control input-sm" id="<?= $value[2] ?>" >
+	    <input name="value1" type="text" class="form-control input-sm"  >
       	<div class="input-group-addon" style="border-left: 0; border-right: 0;">~</div>
-      	<input type="text" class="form-control input-sm" id="<?= $value[3] ?>" >
+      	<input name="value2" type="text" class="form-control input-sm" >
 	  </div>
 
       <button type="button" class="btn btn-primary btn-sm" id="addCondition">添加条件</button>
     </form>
   </div>
+</div>
 </div>
 
 <script>
@@ -88,7 +94,7 @@
 		seajs.use('css/bootstrap-datetimepicker.min.css');
 
 		seajs.use('js/diy_condition.js', function(page) {
-			page.init();
+			page.init(<?= json_encode(compact('where', 'opts', 'fields')) ?>);
 		});
 	}
 	
