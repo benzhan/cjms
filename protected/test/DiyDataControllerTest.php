@@ -10,7 +10,7 @@ class DiyDataControllerTest extends BaseTest {
     }
     
     public function actionTable() {
-        $param = 'tableId=ee524ea0-10e2-edf9-9ad5-7222c4b567cc&where=&keyWord=%7B%22_page%22%3A%222%22%2C%22_pageSize%22%3A%2220%22%2C%22_sortKey%22%3A%22createTime%22%2C%22_sortDir%22%3A%22createTime%22%7D';
+        $param = 'tableId=99a3b406-b929-4609-6049-7af92aea273f&where=&keyWord=%7B"_page"%3Anull%2C"_pageSize"%3Anull%2C"_sortKey"%3Anull%2C"_sortDir"%3Anull%7D';
         parse_str($param, $args);
         
         $this->obj->actionTable($args);

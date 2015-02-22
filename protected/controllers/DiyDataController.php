@@ -6,28 +6,23 @@
  */
 class DiyDataController extends Controller {
 
+    function actionReport($args) {
+        $this->_checkParam($args);
+        
+        $objCondition = new DiyConditionController();
+        $conditionHtml = $objCondition->actionIndex($args, false);
+        $tableHtml = $this->actionTable($args, false);
+        
+        $this->tpl->assign(compact('conditionHtml', 'tableHtml'));
+        $this->tpl->display('diy_report');
+    }
+    
     /**
      * 表格
      * @author benzhan
      */
-    function actionTable($args) {
-        isset($args['where']) && $args['where'] = json_decode($args['where'], true);
-        isset($args['keyWord']) && $args['keyWord'] = json_decode($args['keyWord'], true);
-        
-        $rules = array(
-            'tableId' => 'string',
-            'where' => array('array', 'nullable' => true),
-            'keyWord' => array('object',
-                'nullable' => true,
-                'elem' => array(
-                    '_page' => array('int', 'nullable' => true),
-                    '_pageSize' => array('int', 'nullable' => true),
-                    '_sortKey' =>  array('string', 'nullable' => true),
-                    '_sortDir' =>  array('string', 'enum' => array('ASC', 'DESC'), 'nullable' => true),
-                ),
-            ),
-        );
-        Param::checkParam($rules, $args);
+    function actionTable($args, $display = true) {
+        $this->_checkParam($args);
         
         try {
             $tableId = $args['tableId'];
@@ -50,10 +45,34 @@ class DiyDataController extends Controller {
             
             $this->assignTableArgs($datas, $other);
             $template = Template::init();
-            $template->display('diy_table');
+            if ($display) {
+                $template->display('diy_table');
+            } else {
+                return $template->fetch('diy_table');
+            }
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
+    }
+    
+    private function _checkParam(&$args) {
+        isset($args['where']) && $args['where'] = json_decode($args['where'], true);
+        isset($args['keyWord']) && $args['keyWord'] = json_decode($args['keyWord'], true);
+        
+        $rules = array(
+            'tableId' => 'string',
+            'where' => array('array', 'nullable' => true),
+            'keyWord' => array('object',
+                'nullable' => true,
+                'elem' => array(
+                    '_page' => array('int', 'nullable' => true),
+                    '_pageSize' => array('int', 'nullable' => true),
+                    '_sortKey' =>  array('string', 'nullable' => true),
+                    '_sortDir' =>  array('string', 'enum' => array('ASC', 'DESC'), 'nullable' => true),
+                ),
+            ),
+        );
+        Param::checkParam($rules, $args);
     }
     
     private function _getPageData($args, $page, $pageSize) {
@@ -80,7 +99,6 @@ class DiyDataController extends Controller {
         $other = compact('rowNum', 'page', 'pageSize', 'keyWord');
         return compact('datas', 'other');
     }
-    
 
     /**
      * 初始化列的groupby和cal属性

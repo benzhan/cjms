@@ -10,7 +10,7 @@ class DiyConditionController extends Controller {
      * 条件
      * @author benzhan
      */
-    function actionIndex($args) {
+    function actionIndex($args, $display = true) {
         $rules = array(
             'tableId' => 'string',
             'where' => array('array', 'nullable' => true),
@@ -33,7 +33,11 @@ class DiyConditionController extends Controller {
         
         $this->tpl->assign($args);
         $this->tpl->assign('opts', $GLOBALS['diy']['opts']);
-        $this->tpl->display('diy_condition');
+        if ($display) {
+            $this->tpl->display('diy_condition');
+        } else {
+            return $this->tpl->fetch('diy_condition');
+        }
     }
     
     /**

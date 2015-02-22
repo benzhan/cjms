@@ -4,8 +4,6 @@ define(function(require, exports, module) {
 	require('jquery');
 	require('jquery-ui');
 	
-	exports.init = init;
-	
 	var M = {
 		loadTable : function() {
 			var url = lib.url + "diyData/table";
@@ -30,7 +28,7 @@ define(function(require, exports, module) {
 	
 	var C = {
         init : function() {
-        	$(document).on(BDY.click, '[sortKey]', function() {
+        	$(document).on(BDY.click, '#table [sortKey]', function() {
         		var sortKey = $(this).attr('sortKey');
         		var oldSortKey = lib.getParam('sortKey');
         		if (sortKey == oldSortKey) {
@@ -48,6 +46,14 @@ define(function(require, exports, module) {
         		M.loadTable();
         	});
         	
+            $(document).on(BDY.click, '#oper [name=refresh]', function() {
+            	M.loadTable();
+        	});
+
+        	$(document).on(BDY.click, '#oper [name=copy]', function() {
+        		
+        	});
+        	
         	$(document).on('pager_change', M.loadTable);
         },
 	}
@@ -58,4 +64,8 @@ define(function(require, exports, module) {
 		
 	}
 	
+	exports.init = init;
+	exports.loadTable = M.loadTable;
+	
 });
+

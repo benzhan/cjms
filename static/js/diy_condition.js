@@ -24,12 +24,24 @@ define(function(require, exports, module) {
 					var fieldName = $group.attr('fieldName');
 					var opt = $group.attr('opt');
 					var $controls = $group.find('.form-control');
-					where[i] = [fieldName, opt];
+					var value = [fieldName, opt];
+					
+					var isValid = false;
 					for (var j = 0; j < $controls.length; j++) {
-						where[i].push($($controls[j]).val());
+						var v = $($controls[j]).val();
+						value.push(v);
+						if (v) {
+							isValid = true;
+						}
 					}
+					
+					isValid && where.push(value);
 				}
 				lib.setParam('where', JSON.stringify(where));
+				
+				require.async('js/diy_table.js', function(page) {
+					page.loadTable();
+				});
 			})
         },
         initCustomCondition : function() {
