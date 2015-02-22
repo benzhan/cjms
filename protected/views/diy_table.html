@@ -1,9 +1,9 @@
-<div style="margin:10px;">
+<div id="table" style="margin:10px;">
     <style>
     #oper a { margin-left: 5px; }
-    .table thead th { text-align: center; }
+    .table thead th { text-align: center; white-space: nowrap; }
     </style>
-    <?=  $other['extraJsCss'] ?>
+    <?=  $other['tableInfo']['extraJsCss'] ?>
 	<table class="table table-hover table-striped" style="margin-bottom: 0;">
 	  <caption>
             <span><?= $other['tableInfo']['tableCName'] ?></span> 
@@ -20,14 +20,14 @@
                      $field = $other['fields'][$fieldName];  
                      if ($other['showGroupBy'] && !$field['cal'] && !$field['groupby'] && ($other['isMail'] || $other['hideNoGroupBy'])) { continue; }
              ?>
-            <th fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? "sortKey=" . $sortKey : '' ?>>
+            <th fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? 'sortKey="' . $sortKey . '"' : '' ?>>
                 <a class="js_sort" href="javascript:void(0)"><?=$field['fieldCName']?></a>
                 <?=$field['icon']?>
                 <? if ($other['keyWord']['_sortKey'] == $sortKey) { ?>
                 <?     if ($other['keyWord']['_sortDir'] == 'DESC') { ?>
-                <span style="color: red;" id="arrow">↓</span>
+                <span class="glyphicon glyphicon-triangle-bottom" id="arrow"></span>
                 <?     } else { ?>
-                <span style="color: red;" id="arrow">↑</span>
+                <span class="glyphicon glyphicon-triangle-top" id="arrow"></span>
                 <?     } ?>
                 <? } ?>
             </th>
@@ -72,7 +72,7 @@
       </tbody>
     </table>
 	<?= $pagerHtml ?>
-</div>
+	
 <script>
 (function() {
 	function init() {
@@ -95,7 +95,8 @@
 		header.insertBefore(script, header.firstChild);
 	}
 })();
-
 </script>
+</div>
+
 
 

@@ -11,6 +11,9 @@ class DiyDataController extends Controller {
      * @author benzhan
      */
     function actionTable($args) {
+        isset($args['where']) && $args['where'] = json_decode($args['where'], true);
+        isset($args['keyWord']) && $args['keyWord'] = json_decode($args['keyWord'], true);
+        
         $rules = array(
             'tableId' => 'string',
             'where' => array('array', 'nullable' => true),
@@ -18,8 +21,9 @@ class DiyDataController extends Controller {
                 'nullable' => true,
                 'elem' => array(
                     '_page' => array('int', 'nullable' => true),
+                    '_pageSize' => array('int', 'nullable' => true),
                     '_sortKey' =>  array('string', 'nullable' => true),
-                    '_sortDir' =>  array('string', 'nullable' => true),
+                    '_sortDir' =>  array('string', 'enum' => array('ASC', 'DESC'), 'nullable' => true),
                 ),
             ),
         );

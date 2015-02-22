@@ -131,7 +131,7 @@ class DB_MySQLi extends DB {
 
         $this->qrs = mysqli_query($this->qConn, $sql, $quick ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
         if (!$this->qrs) {
-            throw new DB_Exception('查询失败:' . mysqli_error($this->qConn));
+            throw new DB_Exception('查询失败:' . mysqli_error($this->qConn) . "[sql:{$sql}]");
         } else {
             if ($this->debug) {
                 $this->time[$curSqlNum - 1][] = microtime(true);

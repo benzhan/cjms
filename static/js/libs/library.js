@@ -24,6 +24,7 @@ define(function(require, exports, module) {
     exports.showErrorTip = showErrorTip;
     exports.showLoading = showLoading;
     exports.hideLoading = hideLoading;
+    exports.getLoadingDiv = getLoadingDiv;
     exports.showSelectDialog = showSelectDialog;
     exports.confirm = _confirm;
     exports.prompt = _prompt;
@@ -256,8 +257,20 @@ define(function(require, exports, module) {
         }
     }
 
-    function get(url, callback, option) {
+    function get(url, data, callback, option) {
         option = option || {};
+        // 支持postCross(url, callback)的写法;
+        if ( typeof data == 'function') {
+            option = callback || {};
+            callback = data;
+        } else {
+        	// 构造url
+            if (url.indexOf('?') >= 0) {
+            	url += $.param(data);
+            } else {
+            	url += '?' + $.param(data);
+            }
+        }
         
         if (window.KLCommon && KLCommon.get) {
             KLCommon.get(url, callback, option);
@@ -658,6 +671,95 @@ define(function(require, exports, module) {
         $(document).on(BDY.navBtnClick + "_" + getParam("page"), callback);
     }
     
+    /**
+     * 建立一个覆盖在id加载层，15秒超时消失
+     * （如果是在tab, div的id名为xx_tab, 则loading添加在div中）
+     * @author benzhan
+     * @param id 【可选】待覆盖的div的id
+     * @param containerId 【可选】待覆盖的tab的id，或者为dom对象
+     * @returns 覆盖div的jQuery对象
+     */
+    function getLoadingDiv(id, containerId, timeout) {
+        timeout = timeout || 15000;
+        var $div = $('#' + id);
+        //删除之前的loading
+        $('#_' + id + '_loading').remove();
+        var $loadingDiv = $('<div id="_' + id + '_loading" style="background: #fff url(' + SITE_URL + 'static/images/loading.gif) no-repeat 50% 50%;z-index:200000;position: absolute;opacity: 0.6;filter:alpha(opacity=60);"></div>');
+        
+        if(typeof(id) == "undefined" || $div.length ==0 || $div.width() <=0 || $div.height() <= 0) {
+            //全局loading
+            if($('#' + id).length) {
+                $loadingDiv.css('left', $div.offset().left);
+                var marginTop = parseInt($div.css('margin-top'));
+                var top = $div.offset().top;
+                marginTop && (top += marginTop);
+                $loadingDiv.css('top', top);
+                $loadingDiv.width($div.width());
+                $loadingDiv.height($(document).height() - $div.offset().top);
+            } else {
+                $loadingDiv.width('100%');
+                $loadingDiv.height('100%');
+                $loadingDiv.css('top', '0');
+                $loadingDiv.css('left', '0');
+                $loadingDiv.css('position', 'fixed');
+            }
+        } else {
+            $loadingDiv.width($div.width());
+            $loadingDiv.height($div.height());
+            
+            $loadingDiv.css('left', $div.offset().left);
+            var marginTop = parseInt($div.css('margin-top'));
+            var top = $div.offset().top;
+            marginTop && (top += marginTop);
+            $loadingDiv.css('top', top);
+        }
+        
+        //判断是在tab页面中加还是在body加loading
+        if (typeof(containerId) == "string" && $("#" + containerId).length > 0) {
+            $("#" + containerId).append($loadingDiv);
+        } else if (typeof(containerId) == "object" && containerId.document) {
+            $(containerId.document.body).append($loadingDiv);
+        } else {
+            var $tab = $('.item_now');
+            if($tab.length && $('#' + $tab[0].id + 'Tab').length) {
+                $('#' + $tab[0].id + 'Tab').append($loadingDiv);
+            } else {
+                $('body').append($loadingDiv);
+            }
+        }
+        
+        //超过20秒，则删除loadingDiv
+        var timeOutId = setTimeout(function() {
+            //判断是否存在可见元素
+            if($loadingDiv && $loadingDiv.is(':visible')) {
+                showErrorTip('超时啦!');
+                $loadingDiv.end();
+            }
+        }, timeout);
+        
+        $loadingDiv.end = function() {
+            clearTimeout(timeOutId);
+            $loadingDiv.remove();
+            $loadingDiv = null;
+            
+            $('div[id$=\_loading]').each(function() {
+                var id = this.id;
+                id = id.split('_')[1];
+                var $div = $('#' + id);
+                if (!$div.length) { return; }
+                
+                $(this).css('left', $div.offset().left);
+                var marginTop = parseInt($div.css('margin-top'));
+                var top = $div.offset().top;
+                marginTop && (top += marginTop);
+                $(this).css('top', top);
+            });
+        };
+
+        return $loadingDiv;
+    };
+    
+    var $globalLoading = null;
     function showLoading(text, timeout, cancelable) {
         timeout = timeout || 15000;
         if (cancelable == null) {
@@ -665,14 +767,19 @@ define(function(require, exports, module) {
         } else {
             cancelable = !!cancelable;
         }
+        
         if (window.DuowanUi && DuowanUi.showLoading) {
             DuowanUi.showLoading(text, timeout, cancelable);
+        } else {
+        	$globalLoading = getLoadingDiv();
         }
     }
     
     function hideLoading() {
         if (window.DuowanUi && DuowanUi.hideLoading) {
             DuowanUi.hideLoading();
+        } else {
+        	$globalLoading.end();
         }
     }
     

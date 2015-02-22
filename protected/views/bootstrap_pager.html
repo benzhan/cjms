@@ -42,14 +42,14 @@
 function _pageClick(page) {
 	seajs.use('lib', function(lib) {
 		lib.setParam('page', page);
-		$('.pagination').trigger('change');
+		$(document).trigger('pager_change');
 	});
 };
 
 function _pageChange(input) {
 	seajs.use('lib', function(lib) {
 		lib.setParam('pageSize', input.value);
-		$('.pagination').trigger('change');
+		$(document).trigger('pager_change');
 	});
 };
 </script>
