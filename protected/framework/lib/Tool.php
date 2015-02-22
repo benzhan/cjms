@@ -35,6 +35,28 @@ class Tool {
 
     }
     
+    /**
+     * 获取分页Html
+     * @param array $args array('rowNum', 'page', 'pageSize')
+     * @author benzhan
+     */
+    public static function getPageHtml($args) {
+        isset($args['pageSize']) || $args['pageSize'] = 20;
+        isset($args['page']) || $args['page'] =  (int) $_REQUEST['_page'];
+        
+        // 不需要分页
+        if ($args['rowNum'] <= $args['pageSize']) {
+            return '';
+        }
+        
+        $args['options'] = array(10, 20, 50, 100);
+        $args['total'] = (int) ($args['rowNum'] / $args['pageSize']) + 1;
+        
+        $tpl = Template::init();
+        $tpl->assign($args);
+        return $tpl->fetch('bootstrap_pager');
+    }
+    
 }
 
 //end of script

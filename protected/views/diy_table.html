@@ -1,13 +1,27 @@
-<div id="table" style="margin:10px;">
+<div style="margin:10px;">
+    <style>
+    #oper a { margin-left: 5px; }
+    .table thead th { text-align: center; }
+    </style>
+    <?=  $other['extraJsCss'] ?>
 	<table class="table table-hover table-striped" style="margin-bottom: 0;">
-      <thead>
+	  <caption>
+            <span><?= $other['tableInfo']['tableCName'] ?></span> 
+            <span class="pull-right" id="oper">
+                <a class="glyphicon glyphicon-copy" href="javascript:void(0)" title="复制表格Url"></a>
+                <a class="glyphicon glyphicon-refresh" href="javascript:void(0)" title="刷新"></a>
+                <a class="glyphicon glyphicon-remove" href="javascript:void(0)" title="关闭" ></a>
+            </span>
+      </caption>
+        
+      <thead style="text-align:center;">
         <tr>
           <? foreach ($fieldNames as $fieldName => $sortKey) { 
                      $field = $other['fields'][$fieldName];  
                      if ($other['showGroupBy'] && !$field['cal'] && !$field['groupby'] && ($other['isMail'] || $other['hideNoGroupBy'])) { continue; }
              ?>
-            <th  fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? "sortKey=" . $sortKey : '' ?>>
-                <a class="text"><?=$field['fieldCName']?></a>
+            <th fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? "sortKey=" . $sortKey : '' ?>>
+                <a class="js_sort" href="javascript:void(0)"><?=$field['fieldCName']?></a>
                 <?=$field['icon']?>
                 <? if ($other['keyWord']['_sortKey'] == $sortKey) { ?>
                 <?     if ($other['keyWord']['_sortDir'] == 'DESC') { ?>
@@ -51,27 +65,14 @@
         <? } ?>
     <? } else { ?>
         <!--  没数据的情况 -->
-        <tr class="tr_spec">
-            <td class="td td_spec1">没有数据</td>
+        <tr>
+            <td>没有数据</td>
         </tr>
     <? } ?>
       </tbody>
     </table>
-    
-    <nav>
-      <ul class="pagination">
-        <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-      </ul>
-    </nav>
-    
+	<?= $pagerHtml ?>
 </div>
-
 <script>
 (function() {
 	function init() {

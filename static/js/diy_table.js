@@ -12,7 +12,9 @@ define(function(require, exports, module) {
 	
 	var C = {
         init : function() {
-
+        	$('.table').on(BDY.click, '.js_sort', function() {
+        		
+        	});
         },
 	}
 	

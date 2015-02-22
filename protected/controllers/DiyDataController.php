@@ -36,9 +36,8 @@ class DiyDataController extends Controller {
             $result = $this->_getPageData($args, $page, $pageSize);
             $datas = $result['datas'];
             $other = $result['other'];
-            $other += $tableInfo;
+            $other['tableInfo'] = $tableInfo;
             $other['fields'] = $this->_getFormatFields($fields, $args['keyWord']);
-            $other['callback'] = $args['callback'];
             $other['showGroupBy'] = $args['keyWord']['_showGroupBy'];
             $other['hideNoGroupBy'] = $args['keyWord']['_hideNoGroupBy'];
 
@@ -152,11 +151,12 @@ class DiyDataController extends Controller {
     
         $mergeFieldData = $this->_mergeCol($datas, $other['fields']);
         $other['fields'] = $this->_getRowIcon($other['fields'], $other['showGroupBy']);
-    
-        var_dump(compact('datas', 'fieldNames', 'other', 'mergeFieldData'));exit;
+        
+        $pagerHtml = Tool::getPageHtml($other);
+        // var_dump(compact('datas', 'fieldNames', 'other', 'mergeFieldData', 'pagerHtml'));exit;
         
         $template = Template::init();
-        $template->assign(compact('datas', 'fieldNames', 'other', 'mergeFieldData'));
+        $template->assign(compact('datas', 'fieldNames', 'other', 'mergeFieldData', 'pagerHtml'));
     }
     
     private function _getSortKey($datas, $other) {
