@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><?= SITE_NAME ?></title>
+
+<!-- Bootstrap -->
+<link href="<?= SITE_URL ?>static/css/bootstrap.min.css" rel="stylesheet">
+<body>
+
+<div style="margin:10px;">
+<form  class="form-horizontal" id="tableForm">
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">页面地址</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="tableId" type="hidden" title="页面地址" value="<?=$tableInfo['tableId']?>"/>
+      <p class="form-control-static"><a href="<?= $link ?>" target="_blank"><?= $link ?></a></p>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="tableCName" class="col-sm-2 control-label">页面标题</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="tableCName" type="text" title="页面标题" value="<?= $tableInfo['tableCName'] ? htmlspecialchars($tableInfo['tableCName']) : '' ?>" />
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="pagination" class="col-sm-2 control-label">页面尺寸</label>
+    <div class="col-sm-2">
+      <select class="form-control" id="pagination">
+	  <? foreach ($pageSizes as $value) { ?>
+	      <? if ($value == $tableInfo['pagination']) { ?>
+	  	  <option selected><?= $value ?></option>
+	      <? } else { ?>
+	      <option><?= $value ?></option>
+	      <? } ?>
+	  <? } ?>
+	  </select>
+    </div>
+  </div>
+  
+  <!-- div class="form-group">
+    <label for="tableInfo" class="col-sm-2 control-label">页面说明</label>
+    <div class="col-sm-10">
+      <textarea class="form-control" id="tableInfo" title="页面说明"><?=htmlspecialchars($tableInfo['tableInfo'])?></textarea>
+    </div>
+  </div -->
+  
+  <div class="form-group">
+    <label for="extraJsCss" class="col-sm-2 control-label">
+      内嵌Css或Js(<a class="stip" title="可以写＜script＞js代码＜script＞<br/>或＜style type='text/css＞css代码＜/style＞">？</a>)
+    </label>
+    <div class="col-sm-10">
+      <textarea class="form-control" id="extraJsCss" title="页面说明"><?=htmlspecialchars($tableInfo['extraJsCss'])?></textarea>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">数据操作</label>
+    <div class="col-sm-10">
+	    <label class="checkbox-inline">
+		  <input type="checkbox" id="editFlag" <?=$tableInfo['editFlag']?'checked':''?> > 可编辑
+		</label>
+		<label class="checkbox-inline">
+		  <input type="checkbox" id="excelFlag" <?=$tableInfo['excelFlag']?'checked':''?> > 可导出
+		</label>
+		<label class="checkbox-inline">
+		  <input type="checkbox" id="bookFlag" <?=$tableInfo['bookFlag']?'checked':''?> > 可订阅
+		</label>
+		<label class="checkbox-inline">
+		  <input type="checkbox" id="groupFlag" <?=$tableInfo['groupFlag']?'checked':''?> > 可分组计算
+		</label>
+		<label class="checkbox-inline">
+		  <input type="checkbox" id="chartFlag" <?=$tableInfo['chartFlag']?'checked':''?> > 可展现图形
+		</label>
+	</div>
+  </div>
+  
+  <div class="form-group">
+    <label for="sourceHost" class="col-sm-2 control-label">数据库IP</label>
+    <div class="col-sm-4">
+      <select class="form-control" id="sourceHost">
+      <?foreach($sourceHosts as $sourceHost) {?>
+          <option value="<?=$sourceHost?>" <?=$sourceHost == $tableInfo['sourceHost'] ? 'selected="selected"' : ''?>><?=$sourceHost?></option>
+      <?}?>
+      </select> 
+    </div>
+    <div class="col-sm-4" style="line-height:34px;">
+      <a href="javascript:void(0);" class="addOption">手动添加IP</a>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="sourcePort" class="col-sm-2 control-label">端口</label>
+    <div class="col-sm-2">
+    	<input class="form-control" id="sourcePort" type="text" title="端口" placeholder="端口" value="<?=$tableInfo['sourcePort']?$tableInfo['sourcePort']:'3306'?>" />
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="sourceUser" class="col-sm-2 control-label">
+      用户名
+    </label>
+    <div class="col-sm-4">
+      <input class="form-control" id="sourceUser" type="text" class="text"  value="<?=$tableInfo['sourceUser']?$tableInfo['sourceUser']:'root'?>" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="sourcePass" class="col-sm-2 control-label">
+      密码
+    </label>
+    <div class="col-sm-4">
+      <input class="form-control" id="sourcePass" type="password" class="text" value="<?=$tableInfo['sourcePass']?$tableInfo['sourcePass']:''?>" />
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="sourceDb" class="col-sm-2 control-label">
+      数据源库名
+    </label>
+    <div class="col-sm-4">
+      <select class="form-control" id="sourceDb">
+          <option><?=$tableInfo['sourceDb']?></option>
+      </select>
+    </div>
+    <div class="col-sm-4" style="line-height:34px;">
+      <a href="javascript:void(0);" id="loadDb">刷新</a>
+      <a href="javascript:void(0);" class="addOption">手动添加</a>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="sourceDb" class="col-sm-2 control-label">
+      数据源表名
+    </label>
+    <div class="col-sm-4">
+      <select class="form-control" id="sourceTable">
+          <option><?=$tableInfo['sourceTable']?></option>
+      </select>
+    </div>
+    <div class="col-sm-4" style="line-height:34px;">
+      <a href="javascript:void(0);" id="loadTable">刷新</a>
+      <a href="javascript:void(0);" class="addOption">手动添加</a>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="sourceCallBack" class="col-sm-2 control-label">
+      数据源表名回调(<a class="stip" title="关键字：$_conditions">？</a>)
+    </label>
+    <div class="col-sm-10">
+      <textarea class="form-control" id="sourceCallBack"><?=htmlspecialchars($tableInfo['sourceCallBack'])?></textarea>
+    </div>
+  </div>
+  
+
+<input loadType="1" type="button" class="btn btn-default loadField <?= $tableInfo ? '' : 'hide'?>" value="加载原字段" />
+<input loadType="2" type="button" class="btn btn-default loadField" value="加载数据库字段" />
+<input loadType="3" type="button" class="btn btn-default loadField <?= $tableInfo ? '' : 'hide'?>" value="原字段覆盖数据库字段" />
+<input id="addField" type="button" class="btn btn-default" value="添加新字段" />
+
+
+<div id="tableDiv" style="min-height:100px;">
+    <?includeFile('diy_config_table'); ?>
+</div>
+
+</form>
+
+<div>
+    <input id="saveTable" type="button" class="button" value="保存" />
+</div>
+</div>
+
+<!-- js使用的模板 -->
+<textarea class="none" id="addTpl">
+    <span class="commonBg">
+        <input type="text" /> 
+        <a class="green"  href="javascript:">添加</a>
+        <a class="red" href="javascript:">&nbsp;X&nbsp;</a>
+    </span>
+</textarea>
+
+<script src="<?= SITE_URL ?>static/js/libs/seajs.utils.js"></script>
+<script src="<?= SITE_URL ?>static/js/libs/jquery-1.10.2.js"></script>
+<script src="<?= SITE_URL ?>static/js/libs/bootstrap.min.js"></script>
+
+<script>
+	seajs.use('js/diy_config.js', function(page) {
+		page.init();
+	});
+</script>
+
+</body>
+</html>
+

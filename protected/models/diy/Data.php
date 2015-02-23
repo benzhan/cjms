@@ -477,7 +477,8 @@ class Diy_Data {
         global $db;
         $tempDbKey = "tempTable{$tableInfo['tableId']}";
         if ($db[$tempDbKey]) { return  $db[$tempDbKey]; }
-        if(!$tableInfo['sourceType']) $tableInfo['sourceType'] = "mysqli";
+        
+        $tableInfo['sourceType'] || $tableInfo['sourceType'] = "mysqli";
         $tableInfo['sourceDb'] || $tableInfo['sourceDb'] = 'information_schema';
         $dbInfo = array (
             'enable' => true, 

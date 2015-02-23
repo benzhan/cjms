@@ -30,9 +30,11 @@ $GLOBALS['diy']['fieldTypes'] = array(
 );
 
 /** 字段的数据类型 */
-$GLOBALS['diy']['sourceTypes'] = array(
-    "mysqli"=>"mysqli", 
-    "mysql"=>"mysql"
+$GLOBALS['diy']['pageSizes'] = array(
+    10,
+    20,
+    50, 
+    100
 );
 
 $GLOBALS['diy']['map'] = array(
