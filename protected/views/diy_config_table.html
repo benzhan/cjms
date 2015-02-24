@@ -1,45 +1,60 @@
-<!-- div class="list-group">
-  <div class="list-group-item active">
-    <h4 class="list-group-item-heading">List group item heading</h4>
-    <td class='td' style="text-align:center;  white-space: nowrap;">
-	    <img class="btn_del" src="<?=SITE_URL?>/diy/image/btn_delete.gif" style="width:16px;height:16px;cursor:pointer;" title="删除" />
-    </td>
-    <td class='td'><input name="fieldName" placeholder="字段名不能为空!~!" type='text' class='text' value="<?=htmlspecialchars($field['fieldName'])?>" /></td>
-    <td class='td'><input name="fieldCName" title="显示不能为空!~!" type='text' class='text' value="<?=htmlspecialchars($field['fieldCName'])?>" /></td>
-    <td class='td'><input name="fieldSortName" type='text' class='text' value="<?=htmlspecialchars($field['fieldSortName'])?>" /></td>
-    <td class='td'>
-	    <select name="defaultSortOrder">
-		    <option value=''  <?= $field['defaultSortOrder'] == '' ? 'selected="selected"' : '' ?>>不排序</option>
-		    <option value='ASC' <?= $field['defaultSortOrder'] == 'ASC' ? 'selected="selected"' : '' ?>>顺序</option>
-		    <option value='DESC' <?= $field['defaultSortOrder'] == 'DESC' ? 'selected="selected"' : '' ?>>逆序</option>
-	    </select>
-    </td>
-    <td class='td'><input name="fieldDisplay2" type='checkbox' <?=($field['fieldDisplay']&2)?'checked':''?> /></td>
-    <td class='td'><input name='fieldDisplay1' type='checkbox' <?=($field['fieldDisplay']&1)?'checked':''?> /></td>
-    <td class='td'><input name='needMerge' type='checkbox' <?=($field['needMerge']&1)?'checked':''?> /></td>
-    <td class='td'>
-	    <select name="fieldType">
-	    <? foreach ($fieldTypes as $key => $value) { ?>
-		    <option value='<?=$key?>'  <?= $field['fieldType'] == $key ? 'selected="selected"' : '' ?>><?=$value?></option>
-		<? } ?>
-	    </select>
-    </td>
-    <td class='td'><textarea name="fieldLength" class="textarea"><?=htmlspecialchars($field['fieldLength'])?></textarea></td>
-    <td class='td'><input name="fieldVirtualValue" type='text' class='text' value="<?=$field['fieldVirtualValue']?>" /></td>
-    <td class='td'><input name="defaultValue" type='text' class='text' value="<?=$field['defaultValue']?>" /></td>
-    <td class='td'><textarea name="callBack" class="textarea"><?=htmlspecialchars($field['callBack'])?></textarea></td>
-    <td class='td'>
-	    <select name="fieldMap">
-	    <? foreach ($map as $mapIdx => $value) {?>
-	        <option value='<?=$mapIdx?>' <?=($field['fieldMap'] == $value['func']) ? 'selected' : '' ?>><?=htmlspecialchars($value['desc'])?></option>
-	    <? } ?>
-	    </select>
-    </td>
-  </div>
-</div -->
+<script id="temp_list" type="text/html">
+<div class="list-group" id="fieldGroup">
+<% 
+for (var key in fields) { 
+    var data = fields[key];
+    data['map'] = map;
+    data['fieldTypes'] = fieldTypes;
+    include('temp_list_item', data);
+break;
+} 
+%>
+</div>
+</script>
 
+<script id="temp_list_item" type="text/html">
+<div class="list-group-item">
+    <div class="row">
+	    <p class="col-sm-2">
+	      <input class='form-control' name="fieldName" placeholder="字段名" title="字段名" type='text' value="<%= fieldName %>" />
+	    </p>
+	    <p class="col-sm-2">
+	      <input class='form-control' name="fieldVirtualValue" placeholder="字段规则" title="字段规则" type='text' value="<%= fieldVirtualValue %>" />
+	    </p>
+	    <p class="col-sm-2">
+	      <input class='form-control' name="fieldSortName" placeholder="排序字段名" title="排序字段名" type='text' value="<%= fieldSortName %>" />
+	    </p>
+	    <p class="col-sm-2">
+	   	  <select class='form-control' name="defaultSortOrder" title="排序方向">
+		      <option value=''  <%=  defaultSortOrder == '' ? 'selected="selected"' : '' %>>不排序</option>
+		      <option value='ASC' <%=  defaultSortOrder == 'ASC' ? 'selected="selected"' : '' %>>顺序</option>
+		      <option value='DESC' <%=  defaultSortOrder == 'DESC' ? 'selected="selected"' : '' %>>逆序</option>
+	       </select>
+	    </p>
+    </div>
+    <div class="row">
+	    <p class="col-sm-2">
+	      <input class='form-control' name="fieldCName" placeholder="字段展现名称" title="字段展现名称" type='text' value="<%= fieldCName %>" />
+	    </p>
+	    <p class="col-sm-2">
+	      	<select name="fieldType">
+	        <% foreach (var key in fieldTypes) { %>
+		        <option value='<%= key %>'  <%=  fieldType == key ? 'selected="selected"' : '' %>><%= filedTypes[key] %></option>
+		    <% } %>
+	        </select>
+	    </p>
+	    <p class="col-sm-2">
+            <input class='form-control' name="defaultValue" placeholder="默认值" title="默认值" type='text' value="<%= defaultValue %>" />
+	    </p>
+    </div>
+   
+</div>
+</script>
 
-<table id="liField" class="list" style="width:100%;">
+<div id="liField">
+</div>
+
+<!-- table id="liField" class="list" style="width:100%;">
 	<tr class="th">
 	    <th class="th">字段操作</th>
 	    <th class="th">字段名</th>
@@ -65,90 +80,37 @@
 	    </th>
 	    <th class="th">字典</th>
 	</tr>
-<?if ($fields) {?>
-	<?foreach ($fields as $field) { ?>
-	<tr class='tr_spec' fieldId="<?=$field['fieldId']?>" fieldName="<?=$field['fieldName']?>">
-	    <td class='td' style="text-align:center;  white-space: nowrap;">
-		    <img class="btn_up" src="<?=SITE_URL?>/diy/image/btn_up.png" style="width:16px;height:16px;cursor:pointer;" title="上移" />
-		    <img class="btn_down" src="<?=SITE_URL?>/diy/image/btn_down.png" style="width:16px;height:16px;cursor:pointer;" title="下移" />
-		    <img class="btn_del" src="<?=SITE_URL?>/diy/image/btn_delete.gif" style="width:16px;height:16px;cursor:pointer;" title="删除" />
-	    </td>
-	    <td class='td'><input name="fieldName" title="字段名不能为空!~!" type='text' class='text' value="<?=htmlspecialchars($field['fieldName'])?>" /></td>
-	    <td class='td'><input name="fieldCName" title="显示不能为空!~!" type='text' class='text' value="<?=htmlspecialchars($field['fieldCName'])?>" /></td>
-	    <td class='td'><input name="fieldSortName" type='text' class='text' value="<?=htmlspecialchars($field['fieldSortName'])?>" /></td>
-	    <td class='td'>
-		    <select name="defaultSortOrder">
-			    <option value=''  <?= $field['defaultSortOrder'] == '' ? 'selected="selected"' : '' ?>>不排序</option>
-			    <option value='ASC' <?= $field['defaultSortOrder'] == 'ASC' ? 'selected="selected"' : '' ?>>顺序</option>
-			    <option value='DESC' <?= $field['defaultSortOrder'] == 'DESC' ? 'selected="selected"' : '' ?>>逆序</option>
-		    </select>
-	    </td>
-	    <td class='td'><input name="fieldDisplay2" type='checkbox' <?=($field['fieldDisplay']&2)?'checked':''?> /></td>
-	    <td class='td'><input name='fieldDisplay1' type='checkbox' <?=($field['fieldDisplay']&1)?'checked':''?> /></td>
-	    <td class='td'><input name='needMerge' type='checkbox' <?=($field['needMerge']&1)?'checked':''?> /></td>
-	    <td class='td'>
-		    <select name="fieldType">
-		    <? foreach ($fieldTypes as $key => $value) { ?>
-			    <option value='<?=$key?>'  <?= $field['fieldType'] == $key ? 'selected="selected"' : '' ?>><?=$value?></option>
-			<? } ?>
-		    </select>
-	    </td>
-	    <td class='td'><textarea name="fieldLength" class="textarea"><?=htmlspecialchars($field['fieldLength'])?></textarea></td>
-	    <td class='td'><input name="fieldVirtualValue" type='text' class='text' value="<?=$field['fieldVirtualValue']?>" /></td>
-	    <td class='td'><input name="defaultValue" type='text' class='text' value="<?=$field['defaultValue']?>" /></td>
-	    <td class='td'><textarea name="callBack" class="textarea"><?=htmlspecialchars($field['callBack'])?></textarea></td>
-	    <td class='td'>
-		    <select name="fieldMap">
-		    <? foreach ($map as $mapIdx => $value) {?>
-		        <option value='<?=$mapIdx?>' <?=($field['fieldMap'] == $value['func']) ? 'selected' : '' ?>><?=htmlspecialchars($value['desc'])?></option>
-		    <? } ?>
-		    </select>
-	    </td>
-	</tr>
-	<?}?>
-<?}?>
+
+</table  -->
+
+<script>
+
+(function() {
+	function init() {
+		seajs.use('css/bootstrap.min.css');
+
+		seajs.use('js/diy_config_table.js', function(page) {
+			page.init(<?= json_encode($data) ?>);
+		});
+	}
 	
-	<!--  js模板  -->
-	<? $field = array(); ?>	
-    <tr id="trTpl" class='tr_spec none'  fieldId="<?=$field['fieldId']?>" fieldName="<?=$field['fieldName']?>">
-        <td class='td' style="text-align:center;  white-space: nowrap;">
-            <img class="btn_up" src="<?=SITE_URL?>/diy/image/btn_up.png" style="width:16px;height:16px;cursor:pointer;" title="上移" />
-            <img class="btn_down" src="<?=SITE_URL?>/diy/image/btn_down.png" style="width:16px;height:16px;cursor:pointer;" title="下移" />
-            <img class="btn_del" src="<?=SITE_URL?>/diy/image/btn_delete.gif" style="width:16px;height:16px;cursor:pointer;" title="删除" />
-        </td>
-        <td class='td'><input name="fieldName" type='text' class='text' value="<?=htmlspecialchars($field['fieldName'])?>" /></td>
-        <td class='td'><input name="fieldCName" type='text' class='text' value="<?=htmlspecialchars($field['fieldCName'])?>" /></td>
-        <td class='td'><input name="fieldSortName" type='text' class='text' value="<?=htmlspecialchars($field['fieldSortName'])?>" /></td>
-        <td class='td'>
-            <select name="defaultSortOrder">
-                <option value=''  <?= $field['defaultSortOrder'] == '' ? 'selected="selected"' : '' ?>>不排序</option>
-                <option value='ASC' <?= $field['defaultSortOrder'] == 'ASC' ? 'selected="selected"' : '' ?>>顺序</option>
-                <option value='DESC' <?= $field['defaultSortOrder'] == 'DESC' ? 'selected="selected"' : '' ?>>逆序</option>
-            </select>
-        </td>
-        <td class='td'><input name="fieldDisplay2" type='checkbox' <?=($field['fieldDisplay']&2)?'checked':''?> /></td>
-        <td class='td'><input name='fieldDisplay1' type='checkbox' <?=($field['fieldDisplay']&1)?'checked':''?> /></td>
-        <td class='td'><input name='' type='checkbox' <?=($field['needMerge']&1)?'checked':''?> /></td>
-        <td class='td'>
-            <select name="fieldType">
-            <? foreach ($fieldTypes as $key => $value) { ?>
-                <option value='<?=$key?>'  <?= $field['fieldType'] == $key ? 'selected="selected"' : '' ?>><?=$value?></option>
-            <? } ?>
-            </select>
-        </td>
-        <td class='td'><textarea name="fieldLength" class="textarea"><?=htmlspecialchars($field['fieldLength'])?></textarea></td>
-        <td class='td'><input name="fieldVirtualValue" type='text' class='text' value="<?=$field['fieldVirtualValue']?>" /></td>
-        <td class='td'><input name="defaultValue" type='text' class='text' value="<?=$field['defaultValue']?>" /></td>
-        <td class='td'><textarea name="callBack"class="textarea"><?=htmlspecialchars($field['callBack'])?></textarea></td>
-        <td class='td'>
-            <select name="fieldMap">
-            <? foreach ($map as $mapIdx => $value) {?>
-                <option value='<?=$mapIdx?>' <?=($field['fieldMap']==$value['func'])?'selected':''?>><?=htmlspecialchars($value['desc'])?></option>
-            <? } ?>
-            </select>
-        </td>
-    </tr>
-</table>
+	if (window.seajs) {
+	    init();
+	} else {
+		var SITE_URL = "/cjms/";
+		var script = document.createElement("script");
+		script.src = SITE_URL + "static/js/libs/seajs.utils.js";
+		script.charset = "utf-8";
+		script.onload = init;
+
+		var header = document.getElementsByTagName("head")[0];
+		header.insertBefore(script, header.firstChild);
+	}
+})();
+
+</script>
+
+
 
 
 

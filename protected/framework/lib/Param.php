@@ -47,7 +47,9 @@ array( <br>
     
     private static function getRule(array $rules, array &$args) {
         if ($args["__getRules"]) {
-            $params = $args['__params'];
+            // $params = $args['__params'];
+            $params = array();
+            
             // $params['rules'] = $rules;
             foreach ($rules as $name => $rule) {
                 $value = $params['params'][$name];

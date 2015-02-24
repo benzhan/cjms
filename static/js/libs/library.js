@@ -208,7 +208,7 @@ define(function(require, exports, module) {
     }
 
     /**
-     * option object {'cache', 'loading', 'onTimeout'}
+     * option object {'cache', 'loading', 'onTimeout', 'type}
      * cache为every、once
      */
     function post(url, data, callback, option) {
@@ -250,8 +250,7 @@ define(function(require, exports, module) {
             // 响应处理
             xhr.onload = function() {
                 option['loading'] && hideLoading();
-                var objResult = _getAjaxResult(xhr.responseText);
-                _handleResult(callback, objResult);
+                _handleResult(callback, xhr.responseText, option);
             };
             
         }
@@ -264,6 +263,8 @@ define(function(require, exports, module) {
             option = callback || {};
             callback = data;
         } else {
+        	option = option || {};
+        	
         	// 构造url
             if (url.indexOf('?') >= 0) {
             	url += $.param(data);
@@ -284,14 +285,23 @@ define(function(require, exports, module) {
                 }
                 if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && location.protocol == 'file:')) {
                     option['loading'] && hideLoading();
-                    callback(xhr.responseText);
+                    _handleResult(callback, xhr.responseText, option);
                 }
             };
             xhr.open("GET", url);
             xhr.send();
         }
     }
-    
+
+    function _handleResult(callback, text, option) {
+    	if (option['type'] == 'text') {
+    		var objResult = text;
+    	} else {
+    		var objResult = _getAjaxResult(text);
+    	}
+    	
+        callback && callback(objResult);
+    }
 
     function _getAjaxResult(text) {
         var objResult = {};
@@ -313,13 +323,6 @@ define(function(require, exports, module) {
         return objResult;
     }
 
-    function _handleResult(callback, objResult) {
-        callback && callback(objResult);
-        
-        if (!objResult.result && objResult.ret == -201) {
-            showConfirmBind();
-        }
-    }
     
     function getLocalData(key) {
         return getParam(key) || localStorage.getItem(key);

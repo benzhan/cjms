@@ -1238,6 +1238,7 @@ if ('createTouch' in document) {
     BDY.longTap = 'hover';
 }
 
+BDY.url = SITE_URL;
 BDY.debug = true;
 seajs.config({
     alias : {

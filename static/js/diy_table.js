@@ -22,6 +22,8 @@ define(function(require, exports, module) {
 			lib.get(url, data, function(html) {
 				$loadingDiv.end();
 				$('#table').after(html).remove();
+			}, {
+				type : 'text'
 			});
 		}
 	};

@@ -5,11 +5,8 @@ define(function(require, exports, module) {
 
     var M = {
         getParam : function(funcName, pid) {
-            var url = BDY.url + "/" + funcName + "?doc=func";
-            var data = {
-                funcName : funcName
-            };
-            $.post(url, data, function(objResult) {
+            var url = BDY.url + funcName + "?doc=func";
+            $.get(url, function(objResult) {
                 if (!objResult.result) {
                     alert(objResult.msg);
                 } else {

@@ -10,6 +10,19 @@
 <link href="<?= SITE_URL ?>static/css/bootstrap.min.css" rel="stylesheet">
 <body>
 
+<div id="temp_addOption" class="col-sm-3" style="display:none;">
+  <div class="input-group">
+    <input type="text" class="form-control" id="optionValue" >
+    <div class="input-group-btn">
+      <button id="add" type="button" class="btn btn-default">添加</button>
+      <button id="cancel" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <span class="glyphicon glyphicon-remove"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
 <div style="margin:10px;">
 <form  class="form-horizontal" id="tableForm">
 
@@ -175,15 +188,6 @@
     <input id="saveTable" type="button" class="button" value="保存" />
 </div>
 </div>
-
-<!-- js使用的模板 -->
-<textarea class="none" id="addTpl">
-    <span class="commonBg">
-        <input type="text" /> 
-        <a class="green"  href="javascript:">添加</a>
-        <a class="red" href="javascript:">&nbsp;X&nbsp;</a>
-    </span>
-</textarea>
 
 <script src="<?= SITE_URL ?>static/js/libs/seajs.utils.js"></script>
 <script src="<?= SITE_URL ?>static/js/libs/jquery-1.10.2.js"></script>

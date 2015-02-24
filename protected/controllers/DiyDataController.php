@@ -130,7 +130,7 @@ class DiyDataController extends Controller {
      * @param array $fields 列信息
      * @author benzhan
      */
-    public function formatDatas($datas, $fields, $selectFields = array()) {
+    private function formatDatas($datas, $fields, $selectFields = array()) {
         $map = $this->_getMap($datas, $fields);
     
         $funcs = $tDatas = array ();

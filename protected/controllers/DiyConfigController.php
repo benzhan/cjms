@@ -34,6 +34,11 @@ class DiyConfigController extends Controller {
         $this->tpl->display('diy_config');
     }
     
+    /**
+     * 读取数据库系信息
+     * @author benzhan
+     * @param unknown $args
+     */
     function actionGetDbs($args) {
         $rules = array(
             'sourceHost' => 'ip',
@@ -47,6 +52,11 @@ class DiyConfigController extends Controller {
         return $oConfig->getDbs($args);
     }
     
+    /**
+     * 获取表格信息
+     * @author benzhan
+     * @param unknown $args
+     */
     function actionGetTables($args) {
         $rules = array(
             'sourceHost' => 'ip',
@@ -59,6 +69,65 @@ class DiyConfigController extends Controller {
     
         $oConfig= new Diy_Config();
         return $oConfig->getTables($args);
+    }
+    
+
+    public function actionGetFieldTable($args) {
+        require_once ROOT_PATH . 'diyConfig.inc.php';
+        
+        $rules = array(
+            'tableId' => 'string',
+            'loadType' => array('int', enum => array(1, 2, 3)),
+        );
+        Param::checkParam($rules, $args);
+        
+        $tableId = $args['tableId'];
+        if ($tableId && $args['loadType'] & 1) {
+            $oConfigTable = new Diy_Table();
+            $fields = $oldFields = $oConfigTable->getFields2($tableId);
+        }
+    
+        if ($args['loadType'] & 2) {
+            $objConfig = new Diy_Config();
+            $newFields = $objConfig->getFields($args);
+            $fields = $this->_processFields($newFields, array());
+        }
+    
+        if ($args['loadType'] == 3) {
+            $fields = $this->_processFields($newFields, $oldFields);
+        }
+        
+        $fieldTypes = $GLOBALS['diy']['fieldTypes'];
+        $map = $GLOBALS['diy']['map'];
+        $data = compact('fields', 'fieldTypes', 'map');
+        
+        $template = Template::init();
+        $template->assign(compact('data'));
+        $template->display('diy_config_table');
+    }
+    
+    private function _processFields($newFields, $fields) {
+        $newFields = ArrayformatKey($newFields, 'Field');
+        foreach ($newFields as $field) {
+            $fieldName = $field['Field'];
+            if (!$fields[$fieldName]) {
+                $newField = array();
+                $newField['fieldType'] = $fieldType = $field['Type'];
+                $newField['fieldName'] = $newField['fieldSortName'] = $fieldName;
+                $newField['fieldCName'] = $field['Comment'] ? $field['Comment'] : $fieldName;
+                $newField['fieldPostion'] = count($fields);
+    
+                if (preg_match('/\w+Id/', $fieldName) || ($fieldType != 'int' && $fieldType != 'float' && $fieldType != 'double')) {
+                    $newField['fieldDisplay'] = 2;
+                } else {
+                    $newField['fieldDisplay'] = 1;
+                }
+    
+                $fields[$fieldName] = $newField;
+            }
+        }
+    
+        return $fields;
     }
     
 }
