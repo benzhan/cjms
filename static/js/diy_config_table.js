@@ -1,28 +1,30 @@
 define(function(require, exports, module) {
 	var lib = require('lib'), tpl = require('tpl');
+	var map, fieldTypes;
 	
 	require('jquery');
 	require('jquery-ui');
 	
-	var M = {
-        getFieldTable : function(loadType) {
-        	var url = "diyconfig/getFieldTable";
-            var data = M.getDbData();
-            data.loadType = loadType;
-            
-            var $loadingDiv = lib.getLoadingDiv('tableDiv');
-            lib.get(url, data, function(html) {
-            	$loadingDiv.end();
-            	$('#tableDiv').html(html);
-            }, {
-            	type : 'text'
-            });
-        },
-	};
-	
 	var C = {
         init : function() {
-            
+        	$('#liField').sortable();
+        	
+        	$('#liField').on(BDY.click, '[name=advOption]', function() {
+        		var $item = $(this).parents('.list-group-item');
+        		$item.find('.js-adv').slideToggle();
+        	});
+        	
+        	$('#liField').on(BDY.click, '[name=delete]', function() {
+        		var $item = $(this).parents('.list-group-item');
+        		lib.confirm("确定要删除这个字段吗？", function() {
+        			$item.slideUp();
+        		});
+        	});
+        },
+        addRow : function() {
+        	var data = { map:map, fieldTypes:fieldTypes };
+        	var html = tpl.render('temp_list_item', data);
+			$('#liField').append(html);
         }
 	};
 	
@@ -33,15 +35,19 @@ define(function(require, exports, module) {
 		}
 	};
 	
-	C.init();
-	
 	function init(data) {
 		// 排序自定义条件
-    	$('#liField').sortable();
-    	data && V.init(data);
+		if (data) {
+			V.init(data);
+	        map = data.map;
+	        fieldTypes = data.fieldTypes;
+		}
+		
+    	C.init();
 	}
 	
 	exports.init = init;
+	exports.addRow = C.addRow;
 	
 });
 

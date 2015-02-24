@@ -65,6 +65,13 @@ define(function(require, exports, module) {
                 var loadType = $(this).attr('loadType');
                 M.getFieldTable(loadType);
             });
+            
+            $('[loadType=1]').click();
+            $('#addField').click(function() {
+            	require.async('js/diy_config_table.js', function(page) {
+            		page.addRow();
+            	});
+            });
         },
         bindAddOption : function() {
         	$('.addOption').click(function() {

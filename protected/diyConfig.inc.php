@@ -19,13 +19,15 @@ $GLOBALS['diy']['opts'] = array(
 /** 字段的数据类型 */
 $GLOBALS['diy']['fieldTypes'] = array(
     "int" => "int",
+    'bigint' => "int",
     "float" => "float",
     "string" => "string",
     "enum" => "enum",
     "date" => "date",
     "datetime" => "datetime",
+    "timestamp" => "datetime",
     "text" => "text",
-    "userName" => "userName",
+    // 自定义类型
     "ip" => "ip",
 );
 

@@ -1,15 +1,17 @@
+<style>
+.js-adv { display:none; }
+#oper { margin-right:15px; }
+</style>
+
 <script id="temp_list" type="text/html">
-<div class="list-group" id="fieldGroup">
 <% 
 for (var key in fields) { 
     var data = fields[key];
     data['map'] = map;
     data['fieldTypes'] = fieldTypes;
     include('temp_list_item', data);
-break;
 } 
 %>
-</div>
 </script>
 
 <script id="temp_list_item" type="text/html">
@@ -18,8 +20,44 @@ break;
 	    <p class="col-sm-2">
 	      <input class='form-control' name="fieldName" placeholder="字段名" title="字段名" type='text' value="<%= fieldName %>" />
 	    </p>
+        <p class="col-sm-2">
+	      <input class='form-control' name="fieldCName" placeholder="字段展现名称" title="字段展现名称" type='text' value="<%= fieldCName %>" />
+	    </p>
+	    <p class="col-sm-2">
+	      	<select class='form-control' name="fieldType">
+	        <% for (var key in fieldTypes) { %>
+		        <option value='<%= key %>'  <%=  (fieldType == key) ? 'selected="selected"' : '' %>><%= fieldTypes[key] %></option>
+		    <% } %>
+	        </select>
+	    </p>
+        <p class="col-sm-3">
+           <label class="checkbox-inline">
+	           <input name="fieldDisplay2" type='checkbox' <%= (fieldDisplay & 2) ? 'checked' : '' %> /> 纬度
+           </label>
+           <label class="checkbox-inline">
+	           <input name="fieldDisplay1" type='checkbox' <%= (fieldDisplay & 1) ? 'checked' : '' %> /> 指标
+           </label>
+           <label class="checkbox-inline">
+	           <input name='needMerge' type='checkbox' <%= (needMerge & 1) ? 'checked' : '' %> /> 合并列
+           </label>
+	    </p>
+
+        <span class="columns columns-right btn-group pull-right" id="oper">
+	        <button class="btn btn-default" type="button" name="advOption" title="高级选项">
+	            <i class="glyphicon glyphicon-chevron-down"></i>
+	        </button>
+            <button class="btn btn-default" type="button" name="delete" title="删除">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </span>
+            
+    </div>
+    <div class="row js-adv">
 	    <p class="col-sm-2">
 	      <input class='form-control' name="fieldVirtualValue" placeholder="字段规则" title="字段规则" type='text' value="<%= fieldVirtualValue %>" />
+	    </p>
+	    <p class="col-sm-2">
+            <input class='form-control' name="defaultValue" placeholder="默认值" title="默认值" type='text' value="<%= defaultValue %>" />
 	    </p>
 	    <p class="col-sm-2">
 	      <input class='form-control' name="fieldSortName" placeholder="排序字段名" title="排序字段名" type='text' value="<%= fieldSortName %>" />
@@ -32,57 +70,27 @@ break;
 	       </select>
 	    </p>
     </div>
-    <div class="row">
-	    <p class="col-sm-2">
-	      <input class='form-control' name="fieldCName" placeholder="字段展现名称" title="字段展现名称" type='text' value="<%= fieldCName %>" />
+    <div class="row js-adv">
+        <p class="col-sm-2">
+          <select class='form-control' name="fieldMap">
+	      <% for (var mapIdx in map) { %>
+          <%     var value = map[mapIdx]; %>
+	          <option value='<%= mapIdx %>' <%= (fieldMap == value['func']) ? 'selected' : '' %>><%= value['desc'] %></option>
+	      <% } %>
+	      </select>
 	    </p>
-	    <p class="col-sm-2">
-	      	<select name="fieldType">
-	        <% foreach (var key in fieldTypes) { %>
-		        <option value='<%= key %>'  <%=  fieldType == key ? 'selected="selected"' : '' %>><%= filedTypes[key] %></option>
-		    <% } %>
-	        </select>
+        <p class="col-sm-4">
+          <textarea class='form-control' name="callBack"  placeholder="字段回调" title="字段回调"><%= callBack %></textarea>
 	    </p>
-	    <p class="col-sm-2">
-            <input class='form-control' name="defaultValue" placeholder="默认值" title="默认值" type='text' value="<%= defaultValue %>" />
+        <p class="col-sm-4">
+          <textarea class='form-control' name="fieldLength"  placeholder="字段枚举(json)" title="字段枚举(json)"><%= fieldLength %></textarea>
 	    </p>
     </div>
-   
 </div>
 </script>
 
-<div id="liField">
-</div>
-
-<!-- table id="liField" class="list" style="width:100%;">
-	<tr class="th">
-	    <th class="th">字段操作</th>
-	    <th class="th">字段名</th>
-	    <th class="th">显示名称</th>
-	    <th class="th">排序名称</th>
-	    <th class="th">默认排序</th>
-	    <th class="th">纬度 <input type="checkbox" id="fieldDisplay2"/></th>
-	    <th class="th">指标<input type="checkbox" id="fieldDisplay1"/></th>
-	    <th class="th">合并<input type="checkbox" id="needMerge"/></th>
-	    <th class="th">字段类型</th>
-	    <th class="th">
-	       <a class="stip"  title='<div style="text-align:left;"><span class="red">$_curDb</span> 当前数据库连接对象;</div>'  href="javascript:">字段长度</a>
-	    </th>
-	    <th class="th">规则</th>
-	    <th class="th">默认值</th>
-	    <th class="th">
-	       <a class="stip"  title='<div style="text-align:left;">
-		       <span class="red">$_row</span> 当前行对象;<br/> 
-		       <span class="red">$_rowIndex</span> 当前行索引;<br/> 
-		       <span class="red">$_val</span> 当前字段值;
-		    </div>' 
-	        href="javascript:">回调函数</a>
-	    </th>
-	    <th class="th">字典</th>
-	</tr>
-
-</table  -->
-
+<div class="list-group" id="liField"></div>
+    
 <script>
 
 (function() {

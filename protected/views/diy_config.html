@@ -171,22 +171,24 @@
     </div>
   </div>
   
-
-<input loadType="1" type="button" class="btn btn-default loadField <?= $tableInfo ? '' : 'hide'?>" value="加载原字段" />
-<input loadType="2" type="button" class="btn btn-default loadField" value="加载数据库字段" />
-<input loadType="3" type="button" class="btn btn-default loadField <?= $tableInfo ? '' : 'hide'?>" value="原字段覆盖数据库字段" />
-<input id="addField" type="button" class="btn btn-default" value="添加新字段" />
-
-
-<div id="tableDiv" style="min-height:100px;">
-    <?includeFile('diy_config_table'); ?>
-</div>
-
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <input loadType="1" type="button" class="btn btn-default loadField <?= $tableInfo ? '' : 'hide'?>" value="加载原字段" />
+	  <input loadType="2" type="button" class="btn btn-default loadField" value="加载数据库字段" />
+	  <input loadType="3" type="button" class="btn btn-default loadField <?= $tableInfo ? '' : 'hide'?>" value="原字段覆盖数据库字段" />
+	  <input id="addField" type="button" class="btn btn-default" value="添加新字段" />
+    </div>
+    <div class="panel-body" id="tableDiv">
+    
+    </div>
+    <div class="panel-footer">
+      <input class="btn btn-default" id="saveTable" type="button" value="提交">
+    </div>
+  </div>
+  
 </form>
 
-<div>
-    <input id="saveTable" type="button" class="button" value="保存" />
-</div>
+
 </div>
 
 <script src="<?= SITE_URL ?>static/js/libs/seajs.utils.js"></script>
