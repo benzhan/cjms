@@ -19,17 +19,49 @@ $GLOBALS['diy']['opts'] = array(
 /** 字段的数据类型 */
 $GLOBALS['diy']['fieldTypes'] = array(
     "int" => "int",
-    'bigint' => "int",
     "float" => "float",
     "string" => "string",
     "enum" => "enum",
     "date" => "date",
     "datetime" => "datetime",
-    "timestamp" => "datetime",
     "text" => "text",
     // 自定义类型
     "ip" => "ip",
 );
+
+/** 字段的数据类型 */
+$GLOBALS['diy']['fieldTypeMap'] = array(
+    "tinyint" => "int",
+    "smallint" => "int",
+    "mediumint" => "int",
+    "int" => "int",
+    'bigint' => "int",
+
+    "decimal" => "float",
+    "float" => "float",
+    "double" => "float",
+
+    "varchar" => "string",
+    "char" => "string",
+    
+    "date" => "date",
+    "datetime" => "datetime",
+    "timestamp" => "datetime",
+    
+    'tinytext' => 'text',
+    "text" => "text",
+    'mediumtext' => 'text',
+    'longtext' => 'text',
+    
+    'tinyblob' => 'text',
+    'mediumblob' => 'text',
+    'blob' => 'text',
+    'longblob' => 'text',
+    
+    "enum" => "enum",
+    'set' => 'enum'
+);
+
 
 /** 字段的数据类型 */
 $GLOBALS['diy']['pageSizes'] = array(

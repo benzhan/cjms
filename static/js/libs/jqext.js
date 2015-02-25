@@ -1,179 +1,5 @@
-/**
- * 这个脚本文件里面放一些小的公用jquery插件
- * 1、<input type="date" value="2011-08-20"/>                天选择器
- * 2、<input type="datetime" value="2011-08-20 00:00"/>      5分钟选择器
- * 3、<input type="text" placeholder="请输入邮箱"/>          placeholder为提示符
- */
 
 (function($){
-    var defaults = {
-        'timeType' : 'day'
-    };
-    
-    $.fn.timePicker = function(option) {
-        //定义opt避免defaults被修改
-        var opt = $.extend({}, defaults);
-        option = $.extend(opt, option);
-        initTimeOption();
-        
-        var $wrap = $("<span class='time_block'>"
-                + "<img src='" + SITE_URL + "/rms/image/datepicker-prev.gif' class='time_arrow_left'/>"
-                + "<img src='" + SITE_URL + "/rms/image/datepicker-next.gif' class='time_arrow_right'/>"
-                + "</span>");
-        
-        this.each(function(i) {
-            if (this.timeLoaded) { return; } 
-            this.timeLoaded = true;
-            
-            if (option.timeType == 'day') {
-                initDay(this);
-            } else if (option.timeType == '5min') {
-                init5min(this);
-            }
-        });
-        
-        function initDay(input) {
-            var oldValue = input.value;
-            //检验是否初始化过
-            if (oldValue.length > 10) {
-                var parts = oldValue.split(' ');
-                input.value = parts[0];
-            }
-            
-            $(input).addClass('timeInput');
-            $wrap.insertAfter(input);
-            $wrap.find('.time_arrow_left').after(input);
-
-            $(input).datepicker({ 
-                dateFormat: 'yy-mm-dd',     
-                changeMonth: true,
-                changeYear: true
-            });
-        }
-        
-        function init5min(input) {
-            var oldValue = input.value;
-              $wrap.insertAfter(input);
-              $wrap.find('.time_arrow_left').after(input);
-    
-              var id = input.id;
-              var title = $(input).attr('title');
-              
-              input.id = '';
-              $(input).addClass('minuTimeInput');
-              $(input).datepicker({ 
-                  dateFormat: 'yy-mm-dd',     
-                  changeMonth: true,
-                  changeYear: true,
-                  onSelect : setValue
-              });
-              
-              var html = "<select class='datepicker-minu-detail' " + (title ? "title='" + title + "'" : "") + ">";
-              for (var i = 0; i < 24; i++) {
-                  var hour = i < 10 ? "0" + i : i;
-                  for (var j = 0; j < 12; j++) {
-                      var minu = hour + ":" + (j < 2 ? "0" + (j * 5) : j * 5) + ":00";
-                      var text = " " + hour + " : " + (j < 2 ? "0" + (j * 5) : j * 5) + " ";
-                      html += "<option value='" + minu + "'>" + text + "</option>";
-                  }
-              }
-              html += "</select> ";
-              html += "<input type='hidden' id='" + id + "'/>";;
-              $wrap.after(html);
-              
-              var oldValue = $.trim(input.value);
-              if (oldValue) {
-                  var parts = oldValue.split(' ');
-                  input.value = parts[0];
-                  if (parts[1]) {
-                      var temp = parts[1].split(':');
-                      
-                      //除去01~09时，parseInt变为0的尴尬
-                      if (temp[0].length == 2 && temp[0][0] == '0') {
-                          temp[0] = temp[0][1];
-                      }
-                      var hour = parseInt(temp[0]);
-                      hour = hour < 10 ? "0" + hour : hour;
-                      
-                      //除去01~09时，parseInt变为0的尴尬
-                      if (temp[1].length == 2 && temp[1][0] == '0') {
-                          temp[1] = temp[1][1];
-                      }
-                      
-                      var minu = parseInt(temp[1]);
-                      minu = parseInt(minu / 5) * 5;
-                      minu = minu < 10 ? "0" + minu : minu;
-                      
-                      $wrap.next().val(hour + ':' + minu + ":00");
-                  }
-              } else {
-                  var date = new Date();
-                  var hour = date.getHours();
-                  hour = hour < 10 ? "0" + hour : hour;
-                  var minu = parseInt(date.getMinutes() / 5) * 5;
-                  minu = minu < 10 ? "0" + minu : minu;
-                  $wrap.next().val(hour + ':' + minu + ":00");
-              }
-              
-              setValue();
-              $wrap.next().change(setValue);
-        }
-        
-        function setValue() {
-            //$wrap.next().next()是隐藏域，存放控件值
-            $wrap.next().next().val($wrap.find('input').val() + ' ' + $wrap.next().val());
-        };
-                
-        $wrap.find('.time_arrow_left').click(function() {
-            var $dateField = $(this).next();
-            $dateField.val(addDay($dateField.val(), -1));
-            setValue();
-        });
-        
-        $wrap.find('.time_arrow_right').click(function() {
-            var $dateField = $(this).prev();
-            $dateField.val(addDay($dateField.val(), 1));
-            setValue();
-        });
-        
-        function initTimeOption() {
-            //如果加载过，则不再加载
-            if (!$.datepicker.regional['zh-CN']) {
-                $.datepicker.regional['zh-CN'] = {
-                    clearText: '清除',
-                    clearStatus: '清除已选日期',
-                    closeText: '关闭',
-                    closeStatus: '不改变当前选择',
-                    prevText: '<上月',
-                    prevStatus: '显示上月',
-                    prevBigText: '<<',
-                    prevBigStatus: '显示上一年',
-                    nextText: '下月>',
-                    nextStatus: '显示下月',
-                    nextBigText: '>>',
-                    nextBigStatus: '显示下一年',
-                    currentText: '今天',
-                    currentStatus: '显示本月',
-                    monthNames: ['一月','二月','三月','四月','五月','六月', '七月','八月','九月','十月','十一月','十二月'],
-                    monthNamesShort: ['一月','二月','三月','四月','五月','六月', '七月','八月','九月','十月','十一月','十二月'],
-                    monthStatus: '选择月份',
-                    yearStatus: '选择年份',
-                    weekHeader: '周',
-                    weekStatus: '年内周次',
-                    dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
-                    dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
-                    dayNamesMin: ['日','一','二','三','四','五','六'],
-                    dayStatus: '设置 DD 为一周起始',
-                    dateStatus: '选择 m月 d日, DD',
-                    dateFormat: 'yy-mm-dd',
-                    firstDay: 1,
-                    initStatus: '请选择日期',
-                    isRTL: false
-                };
-                $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
-            }
-        }
-    };
     
     //复制的jquery插件，用法见index.html 202行
     $.fn.copy = function(opts) {
@@ -270,5 +96,16 @@
         
         return $this;
     };
+    
+    /**
+     * $.scrollTo('#pro',500);
+     * Copyright (c) 2007-2014 Ariel Flesler - aflesler<a>gmail<d>com | http://flesler.blogspot.com
+     * Licensed under MIT
+     * @author Ariel Flesler
+     * @version 1.4.11
+     */
+    ;(function(a){if(typeof define==='function'&&define.amd){define(['jquery'],a)}else{a(jQuery)}}(function($){var j=$.scrollTo=function(a,b,c){return $(window).scrollTo(a,b,c)};j.defaults={axis:'xy',duration:parseFloat($.fn.jquery)>=1.3?0:1,limit:true};j.window=function(a){return $(window)._scrollable()};$.fn._scrollable=function(){return this.map(function(){var a=this,isWin=!a.nodeName||$.inArray(a.nodeName.toLowerCase(),['iframe','#document','html','body'])!=-1;if(!isWin)return a;var b=(a.contentWindow||a).document||a.ownerDocument||a;return/webkit/i.test(navigator.userAgent)||b.compatMode=='BackCompat'?b.body:b.documentElement})};$.fn.scrollTo=function(f,g,h){if(typeof g=='object'){h=g;g=0}if(typeof h=='function')h={onAfter:h};if(f=='max')f=9e9;h=$.extend({},j.defaults,h);g=g||h.duration;h.queue=h.queue&&h.axis.length>1;if(h.queue)g/=2;h.offset=both(h.offset);h.over=both(h.over);return this._scrollable().each(function(){if(f==null)return;var d=this,$elem=$(d),targ=f,toff,attr={},win=$elem.is('html,body');switch(typeof targ){case'number':case'string':if(/^([+-]=?)?\d+(\.\d+)?(px|%)?$/.test(targ)){targ=both(targ);break}targ=$(targ,this);if(!targ.length)return;case'object':if(targ.is||targ.style)toff=(targ=$(targ)).offset()}var e=$.isFunction(h.offset)&&h.offset(d,targ)||h.offset;$.each(h.axis.split(''),function(i,a){var b=a=='x'?'Left':'Top',pos=b.toLowerCase(),key='scroll'+b,old=d[key],max=j.max(d,a);if(toff){attr[key]=toff[pos]+(win?0:old-$elem.offset()[pos]);if(h.margin){attr[key]-=parseInt(targ.css('margin'+b))||0;attr[key]-=parseInt(targ.css('border'+b+'Width'))||0}attr[key]+=e[pos]||0;if(h.over[pos])attr[key]+=targ[a=='x'?'width':'height']()*h.over[pos]}else{var c=targ[pos];attr[key]=c.slice&&c.slice(-1)=='%'?parseFloat(c)/100*max:c}if(h.limit&&/^\d+$/.test(attr[key]))attr[key]=attr[key]<=0?0:Math.min(attr[key],max);if(!i&&h.queue){if(old!=attr[key])animate(h.onAfterFirst);delete attr[key]}});animate(h.onAfter);function animate(a){$elem.animate(attr,g,h.easing,a&&function(){a.call(this,targ,h)})}}).end()};j.max=function(a,b){var c=b=='x'?'Width':'Height',scroll='scroll'+c;if(!$(a).is('html,body'))return a[scroll]-$(a)[c.toLowerCase()]();var d='client'+c,html=a.ownerDocument.documentElement,body=a.ownerDocument.body;return Math.max(html[scroll],body[scroll])-Math.min(html[d],body[d])};function both(a){return $.isFunction(a)||typeof a=='object'?a:{top:a,left:a}};return j}));
+
+    
 })(jQuery);
 

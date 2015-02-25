@@ -31,8 +31,14 @@ class DiyConditionController extends Controller {
         $fields = $oTable->getFields($args['tableId']);
         $args['fields'] = $this->_adaptFields($fields);
         
+        $tableId = $args['tableId'];
+        if ($tableId) {
+            $editLink = SITE_URL . 'DiyConfig/edit?tableId=' . $tableId;
+        }
+        
         $this->tpl->assign($args);
         $this->tpl->assign('opts', $GLOBALS['diy']['opts']);
+        $this->tpl->assign('editLink', $editLink);
         if ($display) {
             $this->tpl->display('diy_condition');
         } else {

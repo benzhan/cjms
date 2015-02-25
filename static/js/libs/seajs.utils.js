@@ -1248,7 +1248,8 @@ seajs.config({
         'datetimepicker' : 'js/libs/bootstrap-datetimepicker.min.js',
         'tpl' : 'js/libs/template.js',
         'lib' : 'js/libs/library.js',
-        'treeTable' : 'js/libs/treeTable/jquery.treeTable.js'
+        'treeTable' : 'js/libs/treeTable/jquery.treeTable.js',
+        'form' : 'js/libs/form.js',
     },
     debug : BDY.debug,
     base : SITE_URL ? SITE_URL + 'static/' : './static/',

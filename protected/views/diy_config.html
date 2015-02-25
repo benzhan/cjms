@@ -37,7 +37,7 @@
   <div class="form-group">
     <label for="tableCName" class="col-sm-2 control-label">页面标题</label>
     <div class="col-sm-10">
-      <input class="form-control" id="tableCName" type="text" title="页面标题" value="<?= $tableInfo['tableCName'] ? htmlspecialchars($tableInfo['tableCName']) : '' ?>" />
+      <input class="form-control" id="tableCName" required type="text" title="页面标题" value="<?= $tableInfo['tableCName'] ? htmlspecialchars($tableInfo['tableCName']) : '' ?>" />
     </div>
   </div>
   
@@ -96,7 +96,7 @@
   <div class="form-group">
     <label for="sourceHost" class="col-sm-2 control-label">数据库IP</label>
     <div class="col-sm-4">
-      <select class="form-control" id="sourceHost">
+      <select class="form-control" id="sourceHost" required >
       <?foreach($sourceHosts as $sourceHost) {?>
           <option value="<?=$sourceHost?>" <?=$sourceHost == $tableInfo['sourceHost'] ? 'selected="selected"' : ''?>><?=$sourceHost?></option>
       <?}?>
@@ -110,7 +110,7 @@
   <div class="form-group">
     <label for="sourcePort" class="col-sm-2 control-label">端口</label>
     <div class="col-sm-2">
-    	<input class="form-control" id="sourcePort" type="text" title="端口" placeholder="端口" value="<?=$tableInfo['sourcePort']?$tableInfo['sourcePort']:'3306'?>" />
+    	<input class="form-control" id="sourcePort" required type="text" title="端口" placeholder="端口" value="<?=$tableInfo['sourcePort']?$tableInfo['sourcePort']:'3306'?>" />
     </div>
   </div>
   
@@ -119,7 +119,7 @@
       用户名
     </label>
     <div class="col-sm-4">
-      <input class="form-control" id="sourceUser" type="text" class="text"  value="<?=$tableInfo['sourceUser']?$tableInfo['sourceUser']:'root'?>" />
+      <input class="form-control" id="sourceUser" type="text" class="text" title="用户名" placeholder="用户名" value="<?=$tableInfo['sourceUser']?$tableInfo['sourceUser']:'root'?>" />
     </div>
   </div>
 
@@ -128,7 +128,7 @@
       密码
     </label>
     <div class="col-sm-4">
-      <input class="form-control" id="sourcePass" type="password" class="text" value="<?=$tableInfo['sourcePass']?$tableInfo['sourcePass']:''?>" />
+      <input class="form-control" id="sourcePass" type="password" class="text" title="密码" placeholder="密码" value="<?=$tableInfo['sourcePass']?$tableInfo['sourcePass']:''?>" />
     </div>
   </div>
   
@@ -137,7 +137,7 @@
       数据源库名
     </label>
     <div class="col-sm-4">
-      <select class="form-control" id="sourceDb">
+      <select class="form-control" id="sourceDb" required title="数据源库名" >
           <option><?=$tableInfo['sourceDb']?></option>
       </select>
     </div>
@@ -152,7 +152,7 @@
       数据源表名
     </label>
     <div class="col-sm-4">
-      <select class="form-control" id="sourceTable">
+      <select class="form-control" id="sourceTable" required title="数据源表名" >
           <option><?=$tableInfo['sourceTable']?></option>
       </select>
     </div>
@@ -197,7 +197,7 @@
 
 <script>
 	seajs.use('js/diy_config.js', function(page) {
-		page.init();
+		page.init(<?= json_encode($map) ?>);
 	});
 </script>
 

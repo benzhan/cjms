@@ -5,6 +5,7 @@
  * @author benzhan
  */
 class DiyConfigController extends Controller {
+    private $_dbKey = "Report";
     
     function actionEdit($args) {
         require_once ROOT_PATH . 'diyConfig.inc.php';
@@ -70,7 +71,6 @@ class DiyConfigController extends Controller {
         $oConfig= new Diy_Config();
         return $oConfig->getTables($args);
     }
-    
 
     public function actionGetFieldTable($args) {
         require_once ROOT_PATH . 'diyConfig.inc.php';
@@ -97,6 +97,8 @@ class DiyConfigController extends Controller {
             $fields = $this->_processFields($newFields, $oldFields);
         }
         
+        $fields = $this->_processFields2($fields);
+        
         $fieldTypes = $GLOBALS['diy']['fieldTypes'];
         $map = $GLOBALS['diy']['map'];
         $data = compact('fields', 'fieldTypes', 'map');
@@ -108,27 +110,224 @@ class DiyConfigController extends Controller {
     
     private function _processFields($newFields, $fields) {
         $newFields = ArrayformatKey($newFields, 'Field');
+        
         foreach ($newFields as $field) {
             $fieldName = $field['Field'];
             if (!$fields[$fieldName]) {
                 $newField = array();
-                $newField['fieldType'] = $fieldType = $field['Type'];
+                
+                $fieldType = $field['Type'];
+                preg_match('/(\w+)\((.+)\)/', $fieldType, $matches);
+                if ($matches) {
+                    $fieldType = $matches[1];
+                    $length = (int) $matches[2];
+                } else {
+                    $length = 0;
+                }
+                
+                // 处理类型
+                $fieldType = $GLOBALS['diy']['fieldTypeMap'][$fieldType];
+                if ($fieldType == 'string' && $length > 200) {
+                    $fieldType = 'text';
+                } else if ($fieldType == 'enum') {
+                    // 处理枚举类型
+                    $values = explode(',', $matches[2]);
+                    $fieldLength = array();
+                    foreach ($values as $value) {
+                        $fieldLength[$value] = $value;
+                    }
+                    $newField['fieldLength'] = json_encode($fieldLength);
+                } else if ($fieldType == 'int') {
+                    $lowerFieldName = strtolower($fieldName);
+                    
+                    if (strpos($lowerFieldName, 'time') !== false) {
+                        $fieldType = 'datetime';
+                        $newField['fieldVirtualValue'] = "FROM_UNIXTIME($fieldName,'%Y-%m-%d %H:%i:%s')";
+                    } if (strpos($lowerFieldName, 'date') !== false || strpos($lowerFieldName, 'day') !== false) {
+                        $fieldType = 'date';
+                        $newField['fieldVirtualValue'] = "FROM_UNIXTIME($fieldName,'%Y-%m-%d')";
+                    } 
+                }
+                
+                $newField['fieldType'] = $fieldType;
                 $newField['fieldName'] = $newField['fieldSortName'] = $fieldName;
                 $newField['fieldCName'] = $field['Comment'] ? $field['Comment'] : $fieldName;
                 $newField['fieldPostion'] = count($fields);
     
-                if (preg_match('/\w+Id/', $fieldName) || ($fieldType != 'int' && $fieldType != 'float' && $fieldType != 'double')) {
+                // 设置默认的展现方式
+                if (preg_match('/\w+Id/', $fieldName) || ($fieldType != 'int' && $fieldType != 'float')) {
                     $newField['fieldDisplay'] = 2;
                 } else {
                     $newField['fieldDisplay'] = 1;
                 }
-    
+  
                 $fields[$fieldName] = $newField;
             }
+        }
+        
+        return $fields;
+    }
+
+    private function _processFields2($fields) {
+        foreach ($fields as $key => $field) {
+            // 设置默认显示高级选项
+            if ($field['fieldVirtualValue'] || $field['defaultValue'] || $field['fieldMap'] || $field['callBack'] || $field['fieldLength']) {
+                $field['showAdv'] = 1;
+                
+                //var_dump($field);exit;
+            }
+    
+            $fields[$key] = $field;
         }
     
         return $fields;
     }
     
+    public function actionSaveTableAndFields($args) {
+        $args['fields'] = json_decode($args['fields'], true);
+        $rules = array(
+            'tableId' => 'string',
+            'fields' => 'array',
+        );
+        Param::checkParam($rules, $args);
+        
+        $oBaseTable = new TableHelper('Cmdb3Table', $this->_dbKey);
+        $tableId = $args['tableId'];
+        $fields = arrayPop($args, 'fields');
+    
+        try {
+            $oBaseTable->autoCommit(false);
+            $args['lastModifyTime'] = date('Y-m-d H:i:s');
+            if ($tableId) {
+                // TODO 修改时，才需要检查权限
+                // $this->_checkRight($tableId);
+                //修改表信息
+                $where = compact('tableId');
+                $oBaseTable->updateObject($args, $where);
+            } else {
+                //添加表信息
+                $args['tableId'] = $tableId = uuid();
+                $args['createTime'] = date('Y-m-d H:i:s');
+                // $args['authorId'] = $user['userId'] ? $user['userId'] : 0;
+                $args['authorName'] = $GLOBALS['userName'] ? $GLOBALS['userName'] : 'guest';
+                $oBaseTable->addObject($args);
+                $where = compact('tableId');
+            }
+    
+            $oBaseFields = new TableHelper('Cmdb3Field', $this->_dbKey);
+            $oldFieldIds = $oBaseFields->getAll($where, array('_field' =>'fieldId'));
+            $oldFieldIds = arrayFormatKey($oldFieldIds, 'fieldId');
+    
+            foreach ($fields as $field) {
+                $field['tableId'] = $tableId;
+                $fieldId = $field['fieldId'];
+                if ($fieldId) {
+                    unset($oldFieldIds[$fieldId]);
+                    $oBaseFields->updateObject($field, compact('fieldId'));
+                } else {
+                    $field['fieldId'] = uuid();
+                    $oBaseFields->addObject($field);
+                }
+            }
+    
+            if ($oldFieldIds) {
+                $oldFieldIds = array_keys($oldFieldIds);
+                $oBaseFields->delObject(array('fieldId' => $oldFieldIds));
+            }
+    
+            $oBaseTable->tryCommit();
+        } catch (Exception $ex) {
+            Response::error(CODE_DB_ERROR, null, $ex->getMessage());
+        }
+    
+        Response::success($tableId, "保存成功,复制链接地址可查看数据");
+        return $tableId;
+    }
+    
+    public function actionCopyTable($args) {
+        global $user;
+        $tableId = $args['tableId'];
+        $newTableId = uuid();
+    
+        try {
+            //复制table
+            $oBase = new TableHelper('Cmdb3Table', $this->_dbKey);
+            $oBase->autoCommit(false);
+    
+            Tool::log('copy Cmdb3Table.');
+            $where = compact('tableId');
+            $where = $oBase->escape($where);
+            $table = $oBase->getRow($where);
+            $table['tableId'] = $newTableId;
+            $table['tableName'] .= '【复制】' . NOW;
+            $table['tableCName'] .= '【复制】' . NOW;
+            $table['createTime'] = date('Y-m-d H:i:s');
+            $table['lastModifyTime'] = date('Y-m-d H:i:s');
+            $table['authorId'] = $user['userId'] ? $user['userId'] : 0;
+            $table['authorName'] = $user['userName'] ? $user['userName'] : 'guest';
+    
+            $oBase->addObject($table);
+                
+                // 复制tableMeta
+                /*
+             * $oBase = new TableHelper('Cmdb3TableMeta', $this->_dbKey);
+             * $tableMetas = $oBase->getAll($where);
+             * foreach ($tableMetas as $i => $tableMeta) {
+             * $tableMetas[$i]['tableId'] = $newTableId;
+             * }
+             * $oBase->addObjects2($tableMetas);
+             */
+                
+            // 复制fields
+            $oBase = new TableHelper('Cmdb3Field', $this->_dbKey);
+            $fields = $oBase->getAll($where);
+            foreach ($fields as $i => $field) {
+                $fields[$i]['tableId'] = $newTableId;
+                $fields[$i]['fieldId'] = uuid();
+            }
+            $oBase->addObjects2($fields);
+    
+            $oBase->tryCommit();
+            return true;
+        } catch (Exception $ex) {
+            Response::error(CODE_DB_ERROR, null, $ex->getMessage());
+        }
+    }
+
+    public function actionDelecteTable($args) {
+        $tableId = $args['tableId'];
+        $where = compact('tableId');
+        
+        // 检查权限
+        $this->_checkRight($tableId);
+        
+        try {
+            $oBase = new TableHelper('Cmdb3Table', $this->_dbKey);
+            $where = $oBase->escape($where);
+            $oBase->autoCommit(false);
+            
+            Tool::log('delete Cmdb3TableMeta.');
+            $oBase->delObject($where + array(
+                '_tableName' => 'Cmdb3TableMeta'
+            ));
+            Tool::log('delete Cmdb3Field.');
+            $oBase->delObject($where + array(
+                '_tableName' => 'Cmdb3Field'
+            ));
+            Tool::log('delete Cmdb3Table.');
+            $oBase->delObject($where + array(
+                '_tableName' => 'Cmdb3Table'
+            ));
+            
+            $oBase->tryCommit();
+            return true;
+        } catch (Exception $ex) {
+            Tool::err($ex->getMessage());
+            Tool::err($ex->getTrace());
+            Response::error(CODE_DB_ERROR, null, $ex->getMessage());
+        }
+        
+        return true;
+    }
 }
 

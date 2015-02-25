@@ -41,13 +41,16 @@ class Diy_Data {
         $args['where'] = $this->_getTranslateWhere($fields, $args['where']);
         $keyWord['_where'] = $this->getWhereStr($args['where']);
         $sql = 'SQL_CALC_FOUND_ROWS ';
-        foreach ( $sortedFields as $fieldName => $field) {
-            if ($field['fieldVirtualValue']) {
-                $sql .= "{$field['fieldVirtualValue']} AS `{$fieldName}`,";
-            } else {
-                $sql .= "`{$fieldName}`,";
+        if ($sortedFields) {
+            foreach ( $sortedFields as $fieldName => $field) {
+                if ($field['fieldVirtualValue']) {
+                    $sql .= "{$field['fieldVirtualValue']} AS `{$fieldName}`,";
+                } else {
+                    $sql .= "`{$fieldName}`,";
+                }
             }
-        }
+        } 
+        
         $keyWord['_field'] = substr($sql, 0, -1);
         $datas = $oBase->getAll($keyWord);
         return $datas;

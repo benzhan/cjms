@@ -1,7 +1,8 @@
 <?php
 
-class Diy_Table {
-    private $_dbKey = "Report";
+class Diy_Table extends Model {
+    protected $tableName = 'Cmdb3Table';
+    protected $dbKey = "Report";
 
     /**
      * 获取表配置信息
@@ -11,8 +12,7 @@ class Diy_Table {
 	public function getTableInfo($tableId) {
 	    $where = compact('tableId');
 	    
-		$oBaseTable = new TableHelper('Cmdb3Table', $this->_dbKey);
-		return $oBaseTable->getRow($where);
+		return $this->objHelper->getRow($where);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ class Diy_Table {
 	    $other = array('_sortKey' => 'fieldPosition', '_sortDir' => 'ASC');
 	    $onlyDisplay && $other['_where'] = "fieldDisplay > 0";
 	    
-	    $oBaseField = new TableHelper('Cmdb3Field', $this->_dbKey);
+	    $oBaseField = new TableHelper('Cmdb3Field', $this->dbKey);
 	    $fields = $oBaseField->getAll($where, $other);
 	    
 	    return arrayFormatKey($fields, 'fieldName');
@@ -67,7 +67,7 @@ class Diy_Table {
 	    $where = array();
 	    $where['tableId'] = $args['tableId'];
 	    
-	    $oBaseField = new TableHelper('Cmdb3Field', $this->_dbKey);
+	    $oBaseField = new TableHelper('Cmdb3Field', $this->dbKey);
 	    
 	    $oBaseField->autoCommit(false);
 	    $oBaseField->updateObject(array('defaultDisplay' => 0), $where);
@@ -125,7 +125,7 @@ class Diy_Table {
 	    );
 	    Param::checkParam($rules, $args);
 	
-	    $oBaseTable = new TableHelper('Cmdb3TableMeta', $this->_dbKey);
+	    $oBaseTable = new TableHelper('Cmdb3TableMeta', $this->dbKey);
 	    return $oBaseTable->replaceObject($args);
 	}
 	
@@ -141,7 +141,7 @@ class Diy_Table {
 	    );
 	    Param::checkParam($rules, $where);
 	    
-	    $oBaseTable = new TableHelper('Cmdb3TableMeta', $this->_dbKey);
+	    $oBaseTable = new TableHelper('Cmdb3TableMeta', $this->dbKey);
 	    return $oBaseTable->getRow($where);
 	}
 	

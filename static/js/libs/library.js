@@ -782,7 +782,7 @@ define(function(require, exports, module) {
         if (window.DuowanUi && DuowanUi.hideLoading) {
             DuowanUi.hideLoading();
         } else {
-        	$globalLoading.end();
+        	$globalLoading && $globalLoading.end();
         }
     }
     

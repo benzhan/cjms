@@ -15,16 +15,16 @@ for (var key in fields) {
 </script>
 
 <script id="temp_list_item" type="text/html">
-<div class="list-group-item">
+<div class="list-group-item" fieldId="<%= fieldId %>" >
     <div class="row">
 	    <p class="col-sm-2">
-	      <input class='form-control' name="fieldName" placeholder="字段名" title="字段名" type='text' value="<%= fieldName %>" />
+	      <input class='form-control' name="fieldName" required placeholder="字段名" title="字段名" type='text' value="<%= fieldName %>" />
 	    </p>
         <p class="col-sm-2">
-	      <input class='form-control' name="fieldCName" placeholder="字段展现名称" title="字段展现名称" type='text' value="<%= fieldCName %>" />
+	      <input class='form-control' name="fieldCName" required placeholder="字段展现名称" title="字段展现名称" type='text' value="<%= fieldCName %>" />
 	    </p>
 	    <p class="col-sm-2">
-	      	<select class='form-control' name="fieldType">
+	      	<select class='form-control' name="fieldType" required >
 	        <% for (var key in fieldTypes) { %>
 		        <option value='<%= key %>'  <%=  (fieldType == key) ? 'selected="selected"' : '' %>><%= fieldTypes[key] %></option>
 		    <% } %>
@@ -52,8 +52,8 @@ for (var key in fields) {
         </span>
             
     </div>
-    <div class="row js-adv">
-	    <p class="col-sm-2">
+    <div class="row js-adv" <%= showAdv ? 'style=display:block;' : '' %>>
+	    <p class="col-sm-4">
 	      <input class='form-control' name="fieldVirtualValue" placeholder="字段规则" title="字段规则" type='text' value="<%= fieldVirtualValue %>" />
 	    </p>
 	    <p class="col-sm-2">
@@ -70,7 +70,7 @@ for (var key in fields) {
 	       </select>
 	    </p>
     </div>
-    <div class="row js-adv">
+    <div class="row js-adv" <%= showAdv ? 'style=display:block;' : '' %>>
         <p class="col-sm-2">
           <select class='form-control' name="fieldMap">
 	      <% for (var mapIdx in map) { %>

@@ -21,6 +21,9 @@ for (var key in where) {
 	<button type="button" class="btn btn-primary btn-sm" id="search">查询</button>
 	<button type="button" class="btn btn-link btn-sm" id="switchToNormal">普通查询>></button>
 	<button type="button" class="btn btn-link btn-sm" id="switchToAdv">高级查询>></button>
+    <? if ($editLink) { ?>
+    <a class="btn btn-default btn-sm" id="editReport" href="<?= $editLink ?>" target="_blank" >编辑配置</a>
+    <? } ?>
 </script>
 
 <script id="temp_form_group" type="text/html">

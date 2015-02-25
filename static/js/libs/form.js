@@ -1,5 +1,7 @@
 define(function(require, exports, module) {
-    var $ = require('zepto'), lib = require('lib');
+    var lib = require('lib');
+    require('jquery');
+    require('js/libs/jqext.js');
 
     exports.validateForm = validateForm;
     exports.getFormData = getFormData;
@@ -64,6 +66,7 @@ define(function(require, exports, module) {
         
         for (var i = 0; i < funcList.length; i++) {
             if (!funcList[i]($this)) {
+            	$.scrollTo($this, 500);
                 return false;
             }
         }

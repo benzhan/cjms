@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
-	var lib = require('lib');
+	var lib = require('lib'), form = require('form');
+	var map;
 	
 	var M = {
 		getDbs : function() {
@@ -32,7 +33,7 @@ define(function(require, exports, module) {
             });
         },
         getFieldTable : function(loadType) {
-        	var url = "diyconfig/getFieldTable";
+        	var url = lib.url + "diyconfig/getFieldTable";
             var data = M.getDbData();
             data.loadType = loadType;
             
@@ -53,6 +54,76 @@ define(function(require, exports, module) {
             }
             return data;
         },
+        _getFieldsData : function() {
+            var fields = [];
+            $('#liField').find('.list-group-item:visible').each(function(i) {
+                var fieldMap = map[$(this).find('select[name=fieldMap]').val()]['func'];
+                
+                var fieldDisplay1 = $(this).find('input[name=fieldDisplay1]').prop('checked') ? 1 : 0;
+                var fieldDisplay2 = $(this).find('input[name=fieldDisplay2]').prop('checked') ? 1 : 0;
+                
+                fields.push({
+                    'fieldId': $(this).attr('fieldId'),
+                    'fieldName': $(this).find('input[name=fieldName]').val(),
+                    'fieldCName': $(this).find('input[name=fieldCName]').val(),
+                    'fieldSortName': $(this).find('input[name=fieldSortName]').val(),
+                    'defaultSortOrder': $(this).find('select[name=defaultSortOrder]').val(),
+                    'fieldType': $(this).find('select[name=fieldType]').val(),
+                    'fieldLength': $(this).find('textarea[name=fieldLength]').val(),
+                    'callBack': $(this).find('textarea[name=callBack]').val(),
+                    'fieldDisplay': (fieldDisplay2 << 1) + fieldDisplay1,
+                    'needMerge': ($(this).find('input[name=needMerge]').prop('checked') ? 1 : 0),
+                    'fieldVirtualValue': $(this).find('input[name=fieldVirtualValue]').val(),
+                    'defaultValue': $(this).find('input[name=defaultValue]').val(),
+                    'fieldMap': fieldMap,
+                    'fieldPosition' : i
+                });
+            });
+            
+            return fields;
+        },
+        'saveTable' : function () {
+            if (!form.validateForm('#tableForm') || !confirm('确定要保存？')) {  return false;  }
+            
+            var fields = M._getFieldsData();
+            //var extraJsCss = $('#extraJsCss').val().replace(/\&/g,"%26").replace(/\+/g,"%2B");
+            //var sourceCallBack = $('#sourceCallBack').val().replace(/\&/g,"%26").replace(/\+/g,"%2B");
+            
+            var url = lib.url + "diyConfig/saveTableAndFields";
+            var data = {
+                'tableId': $('#tableId').val() || $.getParam('tableId'),
+                'tableName': $('#tableCName').val(),
+                'tableCName': $('#tableCName').val(),
+                'pagination':$('#pagination').val(),
+                'tableInfo': $('#tableInfo').val(),
+                'extraJsCss': $('#extraJsCss').val(),
+                'sourceHost': $('#sourceHost').val(),
+                'sourcePort': $('#sourcePort').val(),
+                'sourceDb': $('#sourceDb').val(),
+                'sourceType': $('#sourceType').val(),
+                'sourceTable': $('#sourceTable').val(),
+                'sourceUser': $('#sourceUser').val(),
+                'sourcePass': $('#sourcePass').val(),
+                'sourceCallBack': $('#sourceCallBack').val(),
+                'editFlag': $('#editFlag').attr('checked') ? 1 : 0,
+                'bookFlag': $('#bookFlag').attr('checked') ? 1 : 0,
+                'excelFlag': $('#excelFlag').attr('checked') ? 1 : 0,
+                'groupFlag': $('#groupFlag').attr('checked') ? 1 : 0,
+                'chartFlag': $('#chartFlag').attr('checked') ? 1 : 0,
+                'fields': JSON.stringify(fields)
+            };
+            
+            lib.post(url, data, function(objResult) {
+            	if (objResult.result) {
+            		$('#linkUrl').html(SITE_URL + 'DiyData/report?tableId=' + objResult.data);
+            		$('#tableId').val(objResult.data);
+            	}
+            	
+            	lib.showTip(objResult.msg);
+            }, {
+            	loading : true
+            });
+        }
 	};
 	
 	var C = {
@@ -72,6 +143,8 @@ define(function(require, exports, module) {
             		page.addRow();
             	});
             });
+            
+            $('#saveTable').on(BDY.click, M.saveTable);
         },
         bindAddOption : function() {
         	$('.addOption').click(function() {
@@ -126,7 +199,7 @@ define(function(require, exports, module) {
 	C.init();
 	
 	function init(data) {
-		
+		map = data;
 	}
 	
 	exports.init = init;
