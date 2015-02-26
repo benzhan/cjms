@@ -1250,6 +1250,7 @@ seajs.config({
         'lib' : 'js/libs/library.js',
         'treeTable' : 'js/libs/treeTable/jquery.treeTable.js',
         'form' : 'js/libs/form.js',
+        'colortip' : 'js/libs/jquery.colortip.js'
     },
     debug : BDY.debug,
     base : SITE_URL ? SITE_URL + 'static/' : './static/',

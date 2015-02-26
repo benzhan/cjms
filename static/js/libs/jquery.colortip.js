@@ -33,7 +33,12 @@
 			// Adding the tooltip markup to the element and
 			// applying a special class:
 			
-			elem.append(tip.generate()).addClass('colorTipContainer');
+			if (elem.is(':input')) {
+				elem.after(tip.generate());
+				elem.parent().addClass('colorTipContainer');
+			} else {
+				elem.append(tip.generate()).addClass('colorTipContainer');
+			}
 
 			// Checking to see whether a supported color has been
 			// set as a classname on the element.
@@ -50,7 +55,11 @@
 			// If it has been set, it will override the default color
 			
 			if(!hasClass){
-				elem.addClass(settings.color);
+				if (elem.is(':input')) {
+					elem.parent().addClass(settings.color);
+				} else {
+					elem.addClass(settings.color);
+				}
 			}
 			
 			// On mouseenter, show the tip, on mouseleave set the

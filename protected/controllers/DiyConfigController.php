@@ -329,5 +329,44 @@ class DiyConfigController extends Controller {
         
         return true;
     }
+
+    public function actionSetDefaultCondition($args) {
+        $rules = array(
+            'tableId' => 'string',
+            'metaValue' => 'string'
+        );
+        Param::checkParam2($rules, $args);
+    
+        $args['metaKey'] = 'tableDefaultCondition';
+        // 检查权限
+        $this->_checkRight($args['tableId']);
+    
+        $objTable = new Diy_Table();
+        $flag = $objTable->setTableMeta($args);
+        Response::success($flag, '保存成功！');
+    }
+    
+    public function actionGetDefaultCondition($args) {
+        $rules = array(
+            'tableId' => 'string',
+        );
+        Param::checkParam2($rules, $args);
+    
+        $args['metaKey'] = 'tableDefaultCondition';
+    
+        $objTable = new Diy_Table();
+        $data = $objTable->getTableMeta($args);
+        Response::success($data);
+    }
+    
+    /**
+     * TODO 检查用户权限
+     * @author benzhan
+     * @param unknown $tableId
+     */
+    private function _checkRight($tableId) {
+        
+    }
+    
 }
 

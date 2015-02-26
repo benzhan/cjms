@@ -1,5 +1,8 @@
 define(function(require, exports, module) {
 	var lib = require('lib'), tpl = require('tpl');
+	require('colortip');
+	require('css/jquery.colortip.css');
+	
 	var map, fieldTypes;
 	
 	require('jquery');
@@ -7,7 +10,7 @@ define(function(require, exports, module) {
 	
 	var C = {
         init : function() {
-        	$('#liField').sortable();
+        	$('#liField').sortable({revert:true, cancel:':input,.colorTip'});
         	
         	$('#liField').on(BDY.click, '[name=advOption]', function() {
         		var $item = $(this).parents('.list-group-item');
@@ -20,6 +23,11 @@ define(function(require, exports, module) {
         			$item.slideUp();
         		});
         	});
+        	
+        	$('#liField :input[title]').colorTip({
+                'color' : 'blue',
+                'timeout' : 500
+            });
         },
         addRow : function() {
         	var data = { map:map, fieldTypes:fieldTypes };

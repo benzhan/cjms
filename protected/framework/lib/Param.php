@@ -45,6 +45,27 @@ array( <br>
         return self::$succ;
     }
     
+    /**
+     * 效果同checkParam一样，但增加了删除多余字段
+     * @author benzhan
+     * @param array $rules
+     * @param array $args
+     * @param string $exitError
+     * @return Ambigous <multitype:, multitype:boolean , unknown>
+     */
+    public static function checkParam2(array $rules, array &$args, $exitError = true) {
+        $flag = self::checkParam($rules, $args, $exitError);
+        
+        // 删除多余字段
+        foreach ($args as $key => $value) {
+            if (!isset($rules)) {
+                unset($args[$key]);
+            }
+        }
+        
+        return $flag;
+    }
+    
     private static function getRule(array $rules, array &$args) {
         if ($args["__getRules"]) {
             // $params = $args['__params'];

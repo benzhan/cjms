@@ -55,6 +55,45 @@ class DiyDataController extends Controller {
         }
     }
     
+    public function actionExportCSV($args) {
+        $this->_checkParam($args);
+        
+        $tableId = $args['tableId'];
+        $oConfig = new Diy_Table();
+        $tableInfo = $oConfig->getTableInfo($tableId);
+        $fields = $oConfig->getFields($tableId);
+         
+        $oData = new Diy_Data();
+        $datas = $oData->getTableData($args);
+        $datas = $oData->formatDatas($datas, $fields, $args['fields']);
+        
+        $headers = array();
+        foreach ($fields as $fieldName => $field) {
+            if ($field['fieldDisplay']) {
+                $headers[$field['fieldName']] = str_replace('"', '""', strip_tags($field['fieldCName']));
+            }
+        }
+        
+        $body = array();
+        $body[] = '"' . join('","', $headers) . '"';
+        if ($datas) {
+            foreach ($datas as $data) {
+                $tData = array();
+                foreach ($headers as $fieldName => $fieldCName) {
+                    $tData[] = str_replace('"', '""', strip_tags($data[$fieldName]));
+                }
+                $body[] = '"' . join('","', $tData) . '"';
+            }
+        }
+        
+        $filename = strip_tags($tableInfo['tableCName']) . ".csv"; // 文件名
+        header("Content-type:text/csv");
+        header("Content-Disposition:attachment;filename=" . $filename);
+        header("Content-Encoding: utf-8");
+        $body = join("\r\n", $body);
+        exit(iconv('utf-8', 'gb2312', $body));
+    }
+    
     private function _checkParam(&$args) {
         isset($args['where']) && $args['where'] = json_decode($args['where'], true);
         isset($args['keyWord']) && $args['keyWord'] = json_decode($args['keyWord'], true);

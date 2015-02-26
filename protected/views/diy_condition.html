@@ -6,9 +6,11 @@
 #advConditionForm, #customCondition { margin-bottom:0; }
 #advCondition .panel-body { padding:5px; }
 #advCondition #switchToAdv { display:none; }
-.sortable-placeholder { background:#f5f5f5; width:220px;height:30px; }
+.ui-sortable-placeholder { background:#f5f5f5; visibility: visible!important; }
 #normalCondition #switchToNormal, #normalCondition .adv-remove { display:none; }
 #addCondition { margin-left:16px; } 
+
+#setDefaultCondition, #getDefaultCondition { margin-left:16px; }
 </style>
 
 <script id="temp_form_inline" type="text/html">
@@ -22,7 +24,7 @@ for (var key in where) {
 	<button type="button" class="btn btn-link btn-sm" id="switchToNormal">普通查询>></button>
 	<button type="button" class="btn btn-link btn-sm" id="switchToAdv">高级查询>></button>
     <? if ($editLink) { ?>
-    <a class="btn btn-default btn-sm" id="editReport" href="<?= $editLink ?>" target="_blank" >编辑配置</a>
+    <a class="btn btn-warning btn-sm" id="editReport" href="<?= $editLink ?>" target="_blank" >编辑配置</a>
     <? } ?>
 </script>
 
@@ -54,7 +56,9 @@ for (var key in where) {
 <!-- 高级查询模块 -->
 <div class="panel panel-primary" id="advCondition">
   <div class="panel-heading">
-      当前条件
+      <span>当前条件</span>
+      <button class="btn btn-warning btn-sm" id="setDefaultCondition">设为默认</button>
+      <button class="btn btn-warning btn-sm" id="getDefaultCondition">载入默认</button>
   </div>
   <div class="panel-body">
     <form class="form-inline" id="advConditionForm">
@@ -77,7 +81,9 @@ for (var key in where) {
       </select>
       
       <div class="input-group">
-	    <input name="value1" type="text" class="form-control input-sm" >
+	    <input class="form-control input-sm" name="value1" type="text" >
+	    <div class="input-group-addon" style="border-left: 0; border-right: 0; display:none;">~</div>
+        <input class="form-control input-sm" name="value2" type="text" style="display:none;">
 	  </div>
 
       <button type="button" class="btn btn-primary btn-sm" id="addCondition">添加条件</button>

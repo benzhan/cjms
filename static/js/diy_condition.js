@@ -1,14 +1,55 @@
 define(function(require, exports, module) {
 	var lib = require('lib'), tpl = require('tpl');
 	
-	require('jquery');
+	// require('jquery');
 	require('jquery-ui');
 	require('datetimepicker');
 	
 	exports.init = init;
 	
 	var M = {
-
+	    setDefaultCondition : function() {
+            var url = lib.url + 'diyConfig/setDefaultCondition';
+            var data = {}; 
+	    	data.tableId = lib.getParam('tableId');
+            data.metaValue = C.getWhere(true);
+            
+            lib.post(url, data, function(objResult) {
+                if (objResult.result) {
+                    lib.showTip(objResult.msg);
+                } else {
+                	lib.showErrorTip(objResult.msg);
+                }
+            });
+            
+        }, 
+        getDefaultCondition : function() {
+        	var url = lib.url + 'diyConfig/getDefaultCondition';
+            var data = {}; 
+            data.tableId = lib.getParam('tableId');
+            
+            lib.post(url, data, function(objResult) {
+                if (objResult.result) {
+                	var defaultCondition = JSON.parse(objResult.data.metaValue);
+                    if (!defaultCondition) { return; }
+                    
+                    for (var i = 0; i < defaultCondition.length; i++) {
+                        var value = defaultCondition[i];
+                        var field = value[0];
+                        var opt = value[1];
+                        var val = value[2];
+                        var val2 = value[3];
+                        
+                        var $group = $("#condition .form-group[fieldName=" + field + "][opt='" + opt + "']");
+                        $group.find(':input').each(function(i) {
+                        	$(this).val(value[i + 2]);
+                        });
+                    }
+                } else {
+                	lib.showErrorTip(objResult.msg);
+                }
+            });
+        }
 	};
 	
 	var C = {
@@ -17,32 +58,40 @@ define(function(require, exports, module) {
         	C.initDocumentEvent();
         	
         	$('#condition').on(BDY.click, '#search', function() {
-				var $groups = $(this).parent().find('.form-group');
-				var where = [];
-				for (var i = 0; i < $groups.length; i++) {
-					var $group = $($groups[i]);
-					var fieldName = $group.attr('fieldName');
-					var opt = $group.attr('opt');
-					var $controls = $group.find('.form-control');
-					var value = [fieldName, opt];
-					
-					var isValid = false;
-					for (var j = 0; j < $controls.length; j++) {
-						var v = $($controls[j]).val();
-						value.push(v);
-						if (v) {
-							isValid = true;
-						}
-					}
-					
-					isValid && where.push(value);
-				}
-				lib.setParam('where', JSON.stringify(where));
-				
+				lib.setParam('where', C.getWhere(false));
 				require.async('js/diy_table.js', function(page) {
 					page.loadTable();
 				});
-			})
+			});
+        	
+        	$('#setDefaultCondition').on(BDY.click, M.setDefaultCondition);
+        	$('#getDefaultCondition').on(BDY.click, M.getDefaultCondition);
+        },
+        getWhere : function(allowEmpty) {
+        	var where = [];
+        	var $groups = $('#condition').find('.form-group');
+			for (var i = 0; i < $groups.length; i++) {
+				var $group = $($groups[i]);
+				var fieldName = $group.attr('fieldName');
+				var opt = $group.attr('opt');
+				var $controls = $group.find('.form-control');
+				var value = [fieldName, opt];
+				
+				var isValid = false;
+				for (var j = 0; j < $controls.length; j++) {
+					var v = $($controls[j]).val();
+					value.push(v);
+					if (v) {
+						isValid = true;
+					}
+				}
+				
+				if (allowEmpty || isValid) {
+					where.push(value);
+				}
+			}
+			
+			return JSON.stringify(where);
         },
         initCustomCondition : function() {
         	// 添加自定义条件
@@ -94,7 +143,11 @@ define(function(require, exports, module) {
         	});
         	
         	// 排序自定义条件s
-        	$('#advConditionForm').sortable({placeholder: "form-group sortable-placeholder"});
+        	$('#advConditionForm').sortable({ cancel: "a,button,:input" });
+        	
+        	$('#setDefault').on(BDY.click, function() {
+        		
+        	});
         },
         initDocumentEvent : function() {
         	$('#condition').on(
