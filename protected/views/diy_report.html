@@ -19,9 +19,14 @@
 	<script src="<?= SITE_URL ?>static/js/libs/ZeroClipboard.js"></script>
 </head>
 <body>
-	<?= $conditionHtml ?>
-	<?= $tableHtml ?>
-	
+    <div id="condition"></div>
+	<div id="table"></div>
+<script>
+seajs.use('js/diy_condition.js', function(page) {
+	page.getCondition();
+});
+
+</script>
 </body>
 </html>
 

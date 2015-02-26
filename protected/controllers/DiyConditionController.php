@@ -11,6 +11,8 @@ class DiyConditionController extends Controller {
      * @author benzhan
      */
     function actionIndex($args, $display = true) {
+        isset($args['where']) && $args['where'] = json_decode($args['where'], true);
+        
         $rules = array(
             'tableId' => 'string',
             'where' => array('array', 'nullable' => true),

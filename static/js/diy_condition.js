@@ -5,8 +5,6 @@ define(function(require, exports, module) {
 	require('jquery-ui');
 	require('datetimepicker');
 	
-	exports.init = init;
-	
 	var M = {
 	    setDefaultCondition : function() {
             var url = lib.url + 'diyConfig/setDefaultCondition';
@@ -49,6 +47,18 @@ define(function(require, exports, module) {
                 	lib.showErrorTip(objResult.msg);
                 }
             });
+        },
+        getCondition : function() {
+        	var url = lib.url + 'diyCondition/index';
+			var data = {};
+			data.tableId = lib.getParam('tableId');
+			data.where = lib.getParam('where');
+			
+			lib.get(url, data, function(html) {
+				$('#condition').after(html).remove();
+			}, {
+				type : 'text'
+			});
         }
 	};
 	
@@ -57,15 +67,15 @@ define(function(require, exports, module) {
         	C.initCustomCondition();
         	C.initDocumentEvent();
         	
-        	$('#condition').on(BDY.click, '#search', function() {
+        	$(document).on(BDY.click, '#search', function() {
 				lib.setParam('where', C.getWhere(false));
 				require.async('js/diy_table.js', function(page) {
 					page.loadTable();
 				});
 			});
         	
-        	$('#setDefaultCondition').on(BDY.click, M.setDefaultCondition);
-        	$('#getDefaultCondition').on(BDY.click, M.getDefaultCondition);
+        	$(document).on(BDY.click, '#setDefaultCondition', M.setDefaultCondition);
+        	$(document).on(BDY.click, '#getDefaultCondition', M.getDefaultCondition);
         },
         getWhere : function(allowEmpty) {
         	var where = [];
@@ -95,7 +105,7 @@ define(function(require, exports, module) {
         },
         initCustomCondition : function() {
         	// 添加自定义条件
-        	$('#addCondition').on(BDY.click, function() {
+        	$(document).on(BDY.click, '#addCondition', function() {
         		var data = {};
         		data['fieldName'] = $('#fieldName').val();
         		var $option = $('#fieldName > [value="' + data['fieldName'] + '"]');
@@ -127,7 +137,7 @@ define(function(require, exports, module) {
         	    }
         	});
         	
-        	$('#opt').on('change', function() {
+        	$(document).on('change', '#opt', function() {
         		var value = $(this).val();
         		$('#customCondition .input-group > *').hide();
         		if (value == ':') {
@@ -138,31 +148,24 @@ define(function(require, exports, module) {
         	});
         	
         	// 删除自定义条件
-        	$('#advConditionForm').on(BDY.click, '.glyphicon-remove', function() {
+        	$(document).on(BDY.click, '#advConditionForm .glyphicon-remove', function() {
         		$(this).parents('.form-group').remove();
-        	});
-        	
-        	// 排序自定义条件s
-        	$('#advConditionForm').sortable({ cancel: "a,button,:input" });
-        	
-        	$('#setDefault').on(BDY.click, function() {
-        		
         	});
         },
         initDocumentEvent : function() {
-        	$('#condition').on(
+        	$(document).on(
 				'focus.datetimepicker.data-api click.datetimepicker.data-api',
 				'[fieldType="datetime"]',
 				C.initDatetimePicker
 			);
 			
-			$('#condition').on(
+			$(document).on(
 				'focus.datetimepicker.data-api click.datetimepicker.data-api',
 				'[fieldType="date"]',
 				C.initDatetimePicker
 			);
 			
-			$('#condition').on(BDY.click, '#switchToNormal', function() {
+			$(document).on(BDY.click, '#switchToNormal', function() {
 				$('#normalCondition').html($('#advConditionForm > *'));
 				$('#normalCondition').show();
 				$('#advCondition').hide();
@@ -230,6 +233,10 @@ define(function(require, exports, module) {
 					});
 				}
 			}
+			
+			setTimeout(function() {
+				$('#search').trigger(BDY.click);
+			});
 		}
 	}
 	
@@ -237,6 +244,12 @@ define(function(require, exports, module) {
 	
 	function init(data) {
 	    V.init(data);
+	    // 排序自定义条件s
+    	$('#advConditionForm').sortable({ cancel: "a,button,:input" });
 	}
 	
+	exports.init = init;
+	exports.getCondition = M.getCondition;
+
 });
+
