@@ -52,6 +52,8 @@ class Diy_Data {
         } 
         
         $keyWord['_field'] = substr($sql, 0, -1);
+        // $keyWord['_debug'] = true;
+        
         $datas = $oBase->getAll($keyWord);
         return $datas;
     }
@@ -119,6 +121,7 @@ class Diy_Data {
         }
         
         //判断是否有合并列
+        /*
         $mergeFieldNames = $this->getMergeField($fields);
         foreach ($mergeFieldNames as $fieldName) {
             $dir = $keyWord['_sortKey'] == $fieldName ? $keyWord['_sortDir'] : 'ASC';
@@ -129,7 +132,7 @@ class Diy_Data {
                 $keyWord['_sort'] = "{$fieldName} {$dir}";
             }
         }
-        
+        */
         $args['keyWord'] = $keyWord;
         return $keyWord;
     }

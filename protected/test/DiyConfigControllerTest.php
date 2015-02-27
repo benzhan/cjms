@@ -15,8 +15,15 @@ class DiyConfigControllerTest extends BaseTest {
         
         $this->obj->actionSaveTableAndFields($args);
     }
+    
+    public function actionGetFieldTable() {
+        $param = 'tableId=undefined&sourceHost=127.0.0.1&sourcePort=3306&sourceUser=root&sourcePass=&sourceDb=&sourceTable=&loadType=1';
+        parse_str($param, $args);
+        
+        $this->obj->actionGetFieldTable($args);
+    }
 
 }
 
 $obj = new DiyConfigControllerTest();
-$obj->actionSaveTableAndFields();
+$obj->actionGetFieldTable();

@@ -76,7 +76,7 @@ class DiyConfigController extends Controller {
         require_once ROOT_PATH . 'diyConfig.inc.php';
         
         $rules = array(
-            'tableId' => 'string',
+            'tableId' => array('string', 'nullable' => true),
             'loadType' => array('int', enum => array(1, 2, 3)),
         );
         Param::checkParam($rules, $args);
@@ -186,7 +186,7 @@ class DiyConfigController extends Controller {
     public function actionSaveTableAndFields($args) {
         $args['fields'] = json_decode($args['fields'], true);
         $rules = array(
-            'tableId' => 'string',
+            'tableId' => array('string', 'nullable' => true),
             'fields' => 'array',
         );
         Param::checkParam($rules, $args);
@@ -199,8 +199,13 @@ class DiyConfigController extends Controller {
             $oBaseTable->autoCommit(false);
             $args['lastModifyTime'] = date('Y-m-d H:i:s');
             if ($tableId) {
-                // TODO 修改时，才需要检查权限
-                // $this->_checkRight($tableId);
+                $one = $oBaseTable->getOne(compact('tableId'));
+                if (!$one) {
+                    Response::error(CODE_PARAM_ERROR, null, 'tableId is not valid.');
+                }
+                
+                // 修改时，才需要检查权限
+                $this->_checkRight($tableId);
                 //修改表信息
                 $where = compact('tableId');
                 $oBaseTable->updateObject($args, $where);
@@ -241,12 +246,16 @@ class DiyConfigController extends Controller {
         }
     
         Response::success($tableId, "保存成功,复制链接地址可查看数据");
-        return $tableId;
     }
     
     public function actionCopyTable($args) {
         global $user;
         $tableId = $args['tableId'];
+        $rules = array(
+            'tableId' => array('string', 'nullable' => true),
+        );
+        Param::checkParam($rules, $args);
+        
         $newTableId = uuid();
     
         try {
@@ -259,9 +268,9 @@ class DiyConfigController extends Controller {
             $where = $oBase->escape($where);
             $table = $oBase->getRow($where);
             $table['tableId'] = $newTableId;
-            $table['tableName'] .= '【复制】' . NOW;
-            $table['tableCName'] .= '【复制】' . NOW;
             $table['createTime'] = date('Y-m-d H:i:s');
+            $table['tableName'] .= '【复制】' . $table['createTime'];
+            $table['tableCName'] .= '【复制】' . $table['createTime'];
             $table['lastModifyTime'] = date('Y-m-d H:i:s');
             $table['authorId'] = $user['userId'] ? $user['userId'] : 0;
             $table['authorName'] = $user['userName'] ? $user['userName'] : 'guest';
@@ -294,9 +303,14 @@ class DiyConfigController extends Controller {
         }
     }
 
-    public function actionDelecteTable($args) {
+    public function actionDeleteTable($args) {
         $tableId = $args['tableId'];
         $where = compact('tableId');
+        $rules = array(
+            'tableId' => array('string', 'nullable' => true),
+        );
+        Param::checkParam($rules, $args);
+        
         
         // 检查权限
         $this->_checkRight($tableId);

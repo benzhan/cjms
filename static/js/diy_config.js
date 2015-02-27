@@ -47,7 +47,7 @@ define(function(require, exports, module) {
         },
         getDbData : function() {
             var data = {};
-            data.tableId = $('#tableId').val() || $.getParam('tableId');
+            data.tableId = $('#tableId').val() || lib.getParam('tableId');
             var args = ['sourceHost', 'sourcePort', 'sourceUser', 'sourcePass', 'sourceDb', 'sourceTable'];
             for (var i in args) {
                 data[args[i]] = $('#' + args[i]).val();
@@ -91,7 +91,7 @@ define(function(require, exports, module) {
             
             var url = lib.url + "diyConfig/saveTableAndFields";
             var data = {
-                'tableId': $('#tableId').val() || $.getParam('tableId'),
+                'tableId': $('#tableId').val() || lib.getParam('tableId'),
                 'tableName': $('#tableCName').val(),
                 'tableCName': $('#tableCName').val(),
                 'pagination':$('#pagination').val(),
@@ -115,7 +115,8 @@ define(function(require, exports, module) {
             
             lib.post(url, data, function(objResult) {
             	if (objResult.result) {
-            		$('#linkUrl').html(SITE_URL + 'DiyData/report?tableId=' + objResult.data);
+            		var url = SITE_URL + 'DiyData/report?tableId=' + objResult.data;
+            		$('#linkUrl').html(url).attr('href', url);
             		$('#tableId').val(objResult.data);
             	}
             	
@@ -137,7 +138,11 @@ define(function(require, exports, module) {
                 M.getFieldTable(loadType);
             });
             
-            $('[loadType=1]').click();
+            // 加载数据
+            if (lib.getParam('tableId')) {
+            	$('[loadType=1]').click();
+            }
+            
             $('#addField').click(function() {
             	require.async('js/diy_config_table.js', function(page) {
             		page.addRow();

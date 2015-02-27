@@ -213,6 +213,10 @@ class TableHelper {
         }
         
         // Tool::debug($allSql);
+        if ($where['_debug']) {
+            var_dump($allSql);
+            exit;
+        }
         return $this->_db->$fetch($allSql, $where['_limit']);
     }
 
