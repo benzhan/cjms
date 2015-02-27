@@ -14,7 +14,14 @@ class MenuController extends Controller {
         $objMenu = new VMenuNode();
         $items = $objMenu->getDirectSubNode(0);
 
-        $node = array('text' => '根目录', 'value' => 0, 'data' => array());
+        $data = array(
+            'nodeId' => 0, 
+            'nodeName' => '根目录',
+            'leftUrl' => '', 
+            'rightUrl' => '', 
+        );
+        $node = array('text' => $data['nodeName'], 'value' => 0, 'data' => $data);
+        
         $node['items'] = $items;
         $node = array('items' => $node);
         $this->tpl->assign('tree', array('items' => $node));
@@ -69,8 +76,21 @@ class MenuController extends Controller {
             'nodeName' => 'string',
             'leftUrl' => array('string', 'emptyable' => true),
             'rightUrl' => array('string', 'emptyable' => true),
+            'userIds' => array('string', 'emptyable' => true),
         );
         Param::checkParam($rules, $args);
+        
+        $userIds = arrayPop($args, 'userIds');
+        $nodeId = $args['nodeId'];
+        
+        $userIds = explode(';', $userIds);
+        $data = array();
+        foreach ($userIds as $userId) {
+            $data[] = compact('nodeId', 'userId');
+        }
+        
+        $objUserNode = new TableHelper('rUserNode');
+        $objUserNode->addObjects2($data);
  
         $objCMenu = new CMenuNode();
         $nodeId = $objCMenu->saveNode($args);

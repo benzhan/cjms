@@ -1,7 +1,7 @@
 <div id="table" style="margin:10px;">
     <style>
 	    #oper a { margin-left: 5px; }
-	    .table thead th { text-align: center; white-space: nowrap; cursor:pointer; }
+	    .table thead th { white-space: nowrap; cursor:pointer; }
 	    #table caption > span { line-height: 28px; }
     </style>
     <?=  $other['tableInfo']['extraJsCss'] ?>
@@ -30,7 +30,7 @@
             <th fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? 'sortKey="' . $sortKey . '"' : '' ?>>
                 <?=$field['fieldCName']?>
                 <?=$field['icon']?>
-                <? if ($other['keyWord']['_sortKey'] == $sortKey) { ?>
+                <? if ($other['keyWord']['_sortKey'] === $sortKey) { ?>
                 <?     if ($other['keyWord']['_sortDir'] == 'DESC') { ?>
                 <span class="glyphicon glyphicon-triangle-bottom" id="arrow"></span>
                 <?     } else { ?>

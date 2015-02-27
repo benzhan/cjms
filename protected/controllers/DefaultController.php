@@ -57,7 +57,7 @@ class DefaultController extends Controller {
         $objMenu = new VMenuNode();
         $siteMap = array();
         do {
-            $node = $objMenu->objHelper->getOneObject(compact('nodeId'));
+            $node = $objMenu->objHelper->getRow(compact('nodeId'));
             array_unshift($siteMap, $node);
             $nodeId = $node['parentNodeId'];
         } while($nodeId);

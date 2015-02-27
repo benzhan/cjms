@@ -14,7 +14,7 @@ class VMenuNode extends Model {
     }
     
     function getChildByPid($pId) {
-        return $this->objHelper->getObject(array('parentNodeId' => $pId), array('_sort' => 'sortPos ASC'));
+        return $this->objHelper->getAll(array('parentNodeId' => $pId), array('_sort' => 'sortPos ASC'));
     }
     
     function getDirectSubNode($pId) {
@@ -27,12 +27,12 @@ class VMenuNode extends Model {
                 $menuDatas[$key] = $node;
             }
         }
-    
+        
         return $menuDatas;
     }
 
     function getNodeById($nodeId) {
-        $data = $this->objHelper->getOneObject(compact('nodeId'));
+        $data = $this->objHelper->getRow(compact('nodeId'));
         $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
         return $node;
     }

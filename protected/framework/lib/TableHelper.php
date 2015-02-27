@@ -165,7 +165,7 @@ class TableHelper {
      * @param array $args 参数列表，特殊参数前缀_
      * @param array $keyWord 查询关键字, array('_field', '_where', '_limit', '_sortKey', '_sortDir', '_lockRow', '_tableName')
      */
-    function getObject(array $where = array(), $keyWord = array()) {
+    private function getObject(array $where = array(), $keyWord = array()) {
         $where = array_merge($where, $keyWord);
         
         $fetch = $where['_fetch'];
@@ -226,6 +226,7 @@ class TableHelper {
      * @author benzhan
      * @param array $args 参数列表，特殊参数前缀_
      * @param array $keyWord 查询关键字, array('_field', '_where', '_limit', '_sortKey', '_sortDir', '_lockRow', '_tableName')
+     * @return array 返回二维数组
      */
     function getAll(array $where = array(), $keyWord = array()) {      
         return $this->getObject($where, $keyWord);
@@ -236,10 +237,11 @@ class TableHelper {
      * @author benzhan
      * @param array $args 参数列表，特殊参数前缀_
      * @param array $keyWord 查询关键字, array('_field', '_where', '_lockRow', '_tableName')
+     * @return int 行数
      */
     function getCount(array $where = array(), $keyWord = array()) {
         $keyWord['_field'] = 'COUNT(*)';
-        return $this->getOneField($where, $keyWord);
+        return $this->getOne($where, $keyWord);
     }
     
     /**
@@ -264,16 +266,6 @@ class TableHelper {
     }    
 
     /** 
-     * 【兼容函数】获取一行一列，等同于getOne
-     * @author benzhan
-     * @param array $args 参数列表，特殊参数前缀_
-     * @param array $keyWord 查询关键字, array('_field', '_where', '_lockRow', '_tableName')
-     */
-    function getOneField(array $where = array(), $keyWord = array()) {
-        return $this->getOne($where, $keyWord);
-    }
-    
-    /** 
      * 获取一行一列
      * @author benzhan
      * @param array $args 参数列表，特殊参数前缀_
@@ -295,17 +287,7 @@ class TableHelper {
         $keyWord['_fetch'] = 'getCol';
         return $this->getObject($where, $keyWord);
     }
-    
-    /**
-     * 【兼容函数】读取一行数据，等同于getRow
-     * @author benzhan
-     * @param array $args 参数列表，特殊参数前缀_
-     * @param array $keyWord 查询关键字, array('_field', '_where', '_lockRow', '_tableName')
-     */
-    function getOneObject(array $where = array(), $keyWord = array()) {      
-        return $this->getRow($where, $keyWord);
-    }
-    
+
     /**
      * 读取一行数据
      * @author benzhan
