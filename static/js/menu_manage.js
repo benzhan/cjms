@@ -25,7 +25,7 @@ define(function(require, exports, module) {
 		    data.nodeName = $('#node_name').val();
 		    data.leftUrl = $('#leftUrl').val();
 		    data.rightUrl = $('#rightUrl').val();
-		    
+		    data.userIds = $('#userIds').val();
 	        
 		    lib.post(url, data, function(objResult) {
 	            if (objResult.result) {

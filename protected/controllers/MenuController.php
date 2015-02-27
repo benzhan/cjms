@@ -13,12 +13,16 @@ class MenuController extends Controller {
     function actionIndex() {
         $objMenu = new VMenuNode();
         $items = $objMenu->getDirectSubNode(0);
-
+        
+        $objUserNode = new TableHelper('rUserNode');
+        $userIds = $objUserNode->getCol(array('nodeId' => 0), array('_field' => 'userId'));
+        
         $data = array(
             'nodeId' => 0, 
             'nodeName' => '根目录',
             'leftUrl' => '', 
             'rightUrl' => '', 
+            'userIds' => join(';', $userIds),
         );
         $node = array('text' => $data['nodeName'], 'value' => 0, 'data' => $data);
         
@@ -86,14 +90,21 @@ class MenuController extends Controller {
         $userIds = explode(';', $userIds);
         $data = array();
         foreach ($userIds as $userId) {
+            $userId = trim($userId);
             $data[] = compact('nodeId', 'userId');
         }
         
         $objUserNode = new TableHelper('rUserNode');
+        $objUserNode->autoCommit(false);
+        // 删除老数据
+        $objUserNode->delObject(compact('nodeId'));
+        // 添加新数据
         $objUserNode->addObjects2($data);
  
         $objCMenu = new CMenuNode();
         $nodeId = $objCMenu->saveNode($args);
+        
+        $objUserNode->tryCommit();
         
         Response::success($nodeId, '保存成功！');
     }

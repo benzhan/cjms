@@ -21,9 +21,14 @@ class VMenuNode extends Model {
         $pId = (int) $pId;
         $menuDatas = $this->getChildData($pId);
         if ($menuDatas) {
+            $objUserNode = new TableHelper('rUserNode');
             foreach ($menuDatas as $key => $data) {
+                $userIds = $objUserNode->getCol(array('nodeId' => $pId), array('_field' => 'userId'));
+                $data['userIds'] = join(';', $userIds);
+                
                 $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
                 $data['childNum'] > 0 && $node['items'] = array();
+                
                 $menuDatas[$key] = $node;
             }
         }
