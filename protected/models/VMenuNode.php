@@ -17,14 +17,19 @@ class VMenuNode extends Model {
         return $this->objHelper->getAll(array('parentNodeId' => $pId), array('_sort' => 'sortPos ASC'));
     }
     
-    function getDirectSubNode($pId) {
+    function getDirectSubNode($pId, $getAllUser = false) {
         $pId = (int) $pId;
         $menuDatas = $this->getChildData($pId);
         if ($menuDatas) {
-            $objUserNode = new TableHelper('rUserNode');
+            $objUserNode = new UserNode();
             foreach ($menuDatas as $key => $data) {
-                $userIds = $objUserNode->getCol(array('nodeId' => $pId), array('_field' => 'userId'));
+                $userIds = $objUserNode->getUserIds($data['nodeId']);
                 $data['userIds'] = join(';', $userIds);
+                
+                if ($getAllUser) {
+                    $allUserIds = $objUserNode->getAllUserIds($pId);
+                    $data['allUserIds'] = join(';', $allUserIds);
+                }
                 
                 $node = array('text' => $data['nodeName'], 'value' => $data['nodeId'], 'data' => $data);
                 $data['childNum'] > 0 && $node['items'] = array();

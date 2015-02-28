@@ -6,7 +6,7 @@ define(function(require, exports, module) {
 	var M = {
 		getChildsByPId : function(tree, sender) {
 			var url = lib.url + "menu/getChildsByPId";
-		    var data = { nodeId : sender.data.nodeId };
+		    var data = { nodeId : sender.data.nodeId, getAllUser : 1 };
 		    lib.post(url, data, function(objResult) {
 		    	if (objResult.result) {
 	                tree.getNode(sender.index).eleSub.innerHTML = "";

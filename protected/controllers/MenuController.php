@@ -11,20 +11,23 @@ class MenuController extends Controller {
      * @author benzhan
      */
     function actionIndex() {
+        $rootNodeId = 0;
         $objMenu = new VMenuNode();
-        $items = $objMenu->getDirectSubNode(0);
+        $items = $objMenu->getDirectSubNode($rootNodeId, true);
         
-        $objUserNode = new TableHelper('rUserNode');
-        $userIds = $objUserNode->getCol(array('nodeId' => 0), array('_field' => 'userId'));
+        $objUserNode = new UserNode();
+        $userIds = $objUserNode->getUserIds($rootNodeId);
+        $userIds = join(';', $userIds);
         
         $data = array(
-            'nodeId' => 0, 
+            'nodeId' => $rootNodeId, 
             'nodeName' => '根目录',
             'leftUrl' => '', 
             'rightUrl' => '', 
-            'userIds' => join(';', $userIds),
+            'userIds' => $userIds,
+            'allUserIds' => $userIds
         );
-        $node = array('text' => $data['nodeName'], 'value' => 0, 'data' => $data);
+        $node = array('text' => $data['nodeName'], 'value' => $rootNodeId, 'data' => $data);
         
         $node['items'] = $items;
         $node = array('items' => $node);
@@ -39,12 +42,13 @@ class MenuController extends Controller {
      */
     function actionGetChildsByPId($args) {
         $rules = array(
-            'nodeId' => 'int'
+            'nodeId' => 'int',
+            'getAllUser' => array('int', 'nullable' => true),
         );
         Param::checkParam($rules, $args);
         
         $objMenu = new VMenuNode();
-        $nodes = $objMenu->getDirectSubNode($args['nodeId']);
+        $nodes = $objMenu->getDirectSubNode($args['nodeId'], $args['getAllUser']);
         $nodes = array('items' => $nodes);
         Response::success($nodes);
     }
