@@ -1,6 +1,6 @@
 <?php
 
-require_once ROOT_PATH . "globalCode.inc.php";
+require_once ROOT_PATH . "code.inc.php";
 
 // 设置时区
 date_default_timezone_set('PRC');
