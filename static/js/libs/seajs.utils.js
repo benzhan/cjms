@@ -1225,7 +1225,7 @@ if ( typeof JSON !== 'object') {
 var SITE_URL = "/cjms/";
 window.BDY = window.BDY || {};
 if ('createTouch' in document) {
-    BDY.click = 'touchclick';
+    BDY.click = 'click';
     BDY.touchstart = "touchstart";
     BDY.touchmove = "touchmove";
     BDY.touchend = "touchend";

@@ -1,6 +1,6 @@
 <nav class="clearfix">
   <span class="pagination pull-left" style="font-size:16px;">
-  一共<?= $rowNum?>条记录，每页显示
+  一共<?= $rowNum . $total ?>条记录，每页显示
   <select onchange="_pageChange(this);">
   <? foreach ($options as $option) { ?>
       <? if ($option == $pageSize) { ?>
@@ -41,14 +41,14 @@
 <script>
 function _pageClick(page) {
 	seajs.use('lib', function(lib) {
-		lib.setParam('page', page);
+		lib.setParam('_page', page);
 		$(document).trigger('pager_change');
 	});
 };
 
 function _pageChange(input) {
 	seajs.use('lib', function(lib) {
-		lib.setParam('pageSize', input.value);
+		lib.setParam('_pageSize', input.value);
 		$(document).trigger('pager_change');
 	});
 };

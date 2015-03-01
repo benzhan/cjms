@@ -50,7 +50,7 @@ class Tool {
         }
         
         $args['options'] = array(10, 20, 50, 100);
-        $args['total'] = (int) ($args['rowNum'] / $args['pageSize']) + 1;
+        $args['total'] = ceil($args['rowNum'] / $args['pageSize']);
         
         $tpl = Template::init();
         $tpl->assign($args);
