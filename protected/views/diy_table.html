@@ -1,8 +1,23 @@
-<div id="table" style="margin:10px;">
+<div id="table" style="margin:10px;" class="<?= $other['showGroupBy'] ? 'showGroupBy' : '' ?>">
     <style>
 	    #oper a { margin-left: 5px; }
 	    .table thead th { white-space: nowrap; cursor:pointer; }
 	    #table caption > span { line-height: 28px; }
+	    
+		.table th a.text:hover { color:#000; }
+		.table th a.icon { width: 16px; height:16px; display:inline-block; vertical-align: middle; margin-right:5px; }
+		.table th a.noGroupby { background-image: url("<?= SITE_URL ?>/static/images/noGroupby_16.png"); }
+		.table th a.groupby { background-image: url("<?= SITE_URL ?>/static/images/groupby_16.gif"); }
+		
+		.table th a.cal { background-image: url("<?= SITE_URL ?>/static/images/noCal_16.png"); }
+		.table th a._min, .list th a._max, .list th a._avg, .list th a._sum, .list th a._count { width:32px; }
+		.table th a._min {background-image: url("<?= SITE_URL ?>/static/images/diy_min.png"); }
+		.table th a._max {background-image: url("<?= SITE_URL ?>/static/images/diy_max.png"); }
+		.table th a._avg {background-image: url("<?= SITE_URL ?>/static/images/diy_avg.png"); }
+		.table th a._sum {background-image: url("<?= SITE_URL ?>/static/images/diy_sum.png"); }
+		.table th a._count {background-image: url("<?= SITE_URL ?>/static/images/diy_count.png"); }
+		.table td.lightGray { background-color: lightGray; }
+
     </style>
     <?=  $other['tableInfo']['extraJsCss'] ?>
 	<table class="table table-hover table-striped" style="margin-bottom: 0;">
@@ -18,6 +33,9 @@
                 <button class="btn btn-default" type="button" name="export" title="导出">
                 	<i class="glyphicon glyphicon-export"></i>
                 </button>
+                <button class="btn btn-default" type="button" name="cal" title="分组计算">
+                	<i class="glyphicon glyphicon-list-alt"></i>
+                </button>
             </span>
       </caption>
         
@@ -27,9 +45,10 @@
                      $field = $other['fields'][$fieldName];  
                      if ($other['showGroupBy'] && !$field['cal'] && !$field['groupby'] && ($other['isMail'] || $other['hideNoGroupBy'])) { continue; }
              ?>
-            <th fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? 'sortKey="' . $sortKey . '"' : '' ?>>
+            <th fieldName="<?=$field['fieldName']?>"  <?= $sortKey ? 'sortKey="' . $sortKey . '"' : '' ?>  >
                 <?=$field['fieldCName']?>
                 <?=$field['icon']?>
+                
                 <? if ($other['keyWord']['_sortKey'] === $sortKey) { ?>
                 <?     if ($other['keyWord']['_sortDir'] == 'DESC') { ?>
                 <span class="glyphicon glyphicon-triangle-bottom" id="arrow"></span>

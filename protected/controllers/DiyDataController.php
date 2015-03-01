@@ -4,7 +4,7 @@
  * Diy数据
  * @author benzhan
  */
-class DiyDataController extends Controller {
+class DiyDataController extends BaseController {
 
     function actionReport($args) {
         $this->_checkParam($args);

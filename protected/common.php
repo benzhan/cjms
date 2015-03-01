@@ -23,5 +23,4 @@ if (true == DEBUG) {
     error_reporting(0);
 }
 
-
 //end of script

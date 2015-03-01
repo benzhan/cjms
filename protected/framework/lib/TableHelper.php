@@ -427,6 +427,10 @@ class TableHelper {
         $where = $this->_db->escape($where);
         $tableName = $this->getTableName($args);
         
+        if (!$where) {
+            throw new DB_Exception('更新数据不能没有限制条件');
+        }
+        
         $sql = "UPDATE `{$tableName}` SET " . $this->genBackSql($args, ', ') . ' WHERE 1 '. $this->genFrontSql($where, 'AND ');
         // Tool::debug($sql);
         return $this->_db->update($sql);
@@ -440,6 +444,10 @@ class TableHelper {
     function delObject(array $where) {
         $where = $this->_db->escape($where);
         $tableName = $this->getTableName($where);
+        
+        if (!$where) {
+            throw new DB_Exception('删除数据不能没有限制条件');
+        }
         
         $sql = "DELETE FROM `{$tableName}` WHERE 1 " . $this->genFrontSql($where, 'AND ');
         // Tool::debug($sql);

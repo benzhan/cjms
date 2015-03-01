@@ -4,7 +4,7 @@
  * 菜单
  * @author benzhan
  */
-class MenuController extends Controller {
+class MenuController extends BaseController {
     
     /**
      * 首页
@@ -95,7 +95,7 @@ class MenuController extends Controller {
         $data = array();
         foreach ($userIds as $userId) {
             $userId = trim($userId);
-            $data[] = compact('nodeId', 'userId');
+            $userId && $data[] = compact('nodeId', 'userId');
         }
         
         $objUserNode = new TableHelper('rUserNode');
@@ -135,6 +135,13 @@ class MenuController extends Controller {
             if ($subNodeIds) {
                 Response::error(CODE_PARAM_ERROR, '删除失败，请先删除孙子节点');
             }
+            
+            // 先删除子节点
+            $objCMenu = new CMenuNode();
+            $where = array('nodeId' => $subNodeIds);
+            $objCMenu->objHelper->delObject($where);
+            
+            // 没有孙子节点，所以不用删除后续的
         }
         
         $where = array('parentNodeId' => $args['nodeId']);
@@ -142,12 +149,7 @@ class MenuController extends Controller {
         
         $where = array('nodeId' => $args['nodeId']);
         $objRMenu->objHelper->delObject($where);
-        
-        $objCMenu = new CMenuNode();
-        $subNodeIds[] = $args['nodeId'];
-        $where = array('nodeId' => $subNodeIds);
-        $objCMenu->objHelper->delObject($where);
-        
+     
         Response::success(array(), '删除成功！');
     }
     

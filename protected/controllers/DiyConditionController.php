@@ -4,7 +4,7 @@
  * Diy条件
  * @author benzhan
  */
-class DiyConditionController extends Controller {
+class DiyConditionController extends BaseController {
 
     /**
      * 条件

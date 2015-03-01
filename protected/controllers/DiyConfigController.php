@@ -4,7 +4,7 @@
  * Diy报表配置
  * @author benzhan
  */
-class DiyConfigController extends Controller {
+class DiyConfigController extends BaseController {
     private $_dbKey = "Report";
     
     function actionEdit($args) {
@@ -214,7 +214,7 @@ class DiyConfigController extends Controller {
                 $args['tableId'] = $tableId = uuid();
                 $args['createTime'] = date('Y-m-d H:i:s');
                 // $args['authorId'] = $user['userId'] ? $user['userId'] : 0;
-                $args['authorName'] = $GLOBALS['userName'] ? $GLOBALS['userName'] : 'guest';
+                $args['authorName'] = $_SESSION['username'] ? $_SESSION['username'] : 'guest';
                 $oBaseTable->addObject($args);
                 $where = compact('tableId');
             }

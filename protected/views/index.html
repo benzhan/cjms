@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="qc:admins" content="31303476336576346130732537" />
 <title><?= SITE_NAME ?></title>
 
 <!-- Bootstrap -->
@@ -65,8 +66,8 @@
 				</ul>
 				
 				<ul class="nav navbar-nav navbar-right">
-					<li><a id="user" href="#">詹潮江</a></li>
-					<li><a id="logout" href="#">注销</a></li>
+					<li><a id="user" href="#"><?= $_SESSION['username'] ?></a></li>
+					<li><a id="logout" href="<?= SITE_URL ?>user/logout">注销</a></li>
 				</ul>
 			</div>
 			<!-- /.navbar-collapse -->

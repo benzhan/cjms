@@ -14,6 +14,8 @@ class UserNode extends Model {
     function getAllUserIds($nodeId) {
         $objRMenu = new RMenuNode();
         $parentIds = $objRMenu->getAllParentIds($nodeId);
+        // 也需要把当前节点也参与查询
+        $parentIds[] = $nodeId;
         
         $where = array('nodeId' => $parentIds);
         $keyWord = array('_field' => 'userId');

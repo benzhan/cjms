@@ -27,7 +27,7 @@ class VMenuNode extends Model {
                 $data['userIds'] = join(';', $userIds);
                 
                 if ($getAllUser) {
-                    $allUserIds = $objUserNode->getAllUserIds($pId);
+                    $allUserIds = $objUserNode->getAllUserIds($data['nodeId']);
                     $data['allUserIds'] = join(';', $allUserIds);
                 }
                 

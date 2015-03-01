@@ -143,14 +143,14 @@ define(function(require, exports, module) {
         var reg = new RegExp("(^|!|&)" + name + "=([^&]*)(&|$)");
         r = hash.match(reg);
         if (r) {
-            hash.replace(r[0], "");
+        	hash = hash.replace(r[0], "");
         }
         
         if (causeHistory) {
             document.location.hash = "!" + hash;
         } else {
             if (history.replaceState) {
-                history.replaceState({}, null, hash);
+            	history.replaceState({}, null, "#!" + hash);
             } else {
                 console.error("history.replaceState:" + history.replaceState);
             }

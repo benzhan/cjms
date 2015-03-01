@@ -87,7 +87,7 @@ class RouterHelper {
             $funcName = substr($funcName, 0, $pos);
         }
         $funcName || $funcName = 'Index';
-        return "action{$funcName}";
+        return $funcName;
     }
 
     function error($funcName, $msg) {

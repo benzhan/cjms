@@ -4,7 +4,7 @@
  * 首页
  * @author benzhan
  */
-class DefaultController extends Controller {
+class DefaultController extends BaseController {
 
     /**
      * 首页

@@ -13,6 +13,10 @@ define('TIME', time());
 define('NOW', date('Y-m-d H:i:s', TIME));
 define('TODAY', date('Y-m-d', TIME));
 
+
+define('COOKIE_PATH', '/');
+define('COOKIE_DOMAIN', $_SERVER['HTTP_HOST']);
+
 $localIps = array(
     '127.0.0.1',
 );
@@ -37,40 +41,34 @@ if (in_array($addr, $localIps) || empty($addr)) {
     define('DEBUG', true);
 }
 
-if (ENV != ENV_FORMAL) {
+$GLOBALS['dbInfo']['default'] = array(
+    'enable' => true,
+    'dbType' => 'mysqli',
+    'dbHost' => '127.0.0.1',
+    'dbPort' => 3306,
+    'dbName' => 'Web',
+    'dbUser' => 'root',
+    'dbPass' => 'root',
+);
 
-    $GLOBALS['dbInfo']['default'] = array(
-        'enable' => true,
-        'dbType' => 'mysqli',
-        'dbHost' => '127.0.0.1',
-        'dbPort' => 3306,
-        'dbName' => 'Web',
-        'dbUser' => 'root',
-        'dbPass' => 'root',
-    );
-    
-    $GLOBALS['dbInfo']['Report'] = array(
-        'enable' => true,
-        'dbType' => 'mysqli',
-        'dbHost' => '127.0.0.1',
-        'dbPort' => 3306,
-        'dbName' => 'Report',
-        'dbUser' => 'root',
-        'dbPass' => 'root',
-    );
+$GLOBALS['dbInfo']['Report'] = array(
+    'enable' => true,
+    'dbType' => 'mysqli',
+    'dbHost' => '127.0.0.1',
+    'dbPort' => 3306,
+    'dbName' => 'Report',
+    'dbUser' => 'root',
+    'dbPass' => 'root',
+);
 
-    $GLOBALS['redisInfo']['logstash_redis'] = array(
-        'host' => '127.0.0.1',
-        'port' => 6379
-    );
-    
-    // 站点URL，最后不带斜杠
-    define('SITE_DIR', '/cjms/');
-} else {
-    
-    // 站点URL，最后不带斜杠
-    define('SITE_DIR', '/cjms.com/');
-}
+$GLOBALS['redisInfo']['logstash_redis'] = array(
+    'host' => '127.0.0.1',
+    'port' => 6379
+);
+
+// 站点URL，最后不带斜杠
+define('SITE_DIR', '/cjms/');
+
 
 define('SITE_NAME', 'CJ管理平台');
 define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST'] . SITE_DIR);
