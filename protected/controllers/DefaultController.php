@@ -28,15 +28,22 @@ class DefaultController extends BaseController {
         );
         Param::checkParam($rules, $args);
         $nodeId = $args['nodeId'];
-    
-        $objMenu = new VMenuNode();
-        $node = $objMenu->getNodeById($nodeId);
-    
-        $items = $objMenu->getDirectSubNode($nodeId);
-        if ($items) {
-            $node['items'] = $items;
+        
+        $objUserNode = new UserNode();
+        $allUserIds = $objUserNode->getAllUserIds($nodeId);
+        
+        if (in_array($_SESSION['username'], $allUserIds)) {
+            $objMenu = new VMenuNode();
+            $node = $objMenu->getNodeById($nodeId);
+            
+            $items = $objMenu->getDirectSubNode($nodeId);
+            if ($items) {
+                $node['items'] = $items;
+            }
+        } else {
+            $node = array('text' => '对不起，您没有权限！');
         }
-    
+        
         $node = array('items' => $node);
         $this->tpl->assign('tree', array('items' => $node));
         $this->tpl->display('menu_tree');

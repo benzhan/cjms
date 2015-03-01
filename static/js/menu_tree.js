@@ -50,13 +50,37 @@ define(function(require, exports, module) {
 		}
 	}
 	
+	function formatUrl(url, nodeId) {
+		if (url) {
+        	var postfix = url.indexOf('?') >= 0 ? '&' : '?';
+        	var index = url.indexOf('#');
+        	if (index >= 0) {
+        		var part1 = url.substr(0, index);
+        		var part2 = url.substr(index + 1);
+        		url = part1 + postfix + "_nodeId=" + nodeId + '#' + part2;
+        	} else {
+        		url += postfix + "_nodeId=" + nodeId;
+        	}
+        }
+		
+		return url;
+	}
+	
 	function setOnFocus(tree, sender) {
 	    sender.onfocus = function(sender){
-	        var leftUrl = sender.data.leftUrl;
-	        leftUrl && $('#tree', parent.document).attr('src', leftUrl);
+	    	if (!sender.data) {
+	    		return;
+	    	}
+	    	
+	        var leftUrl = formatUrl(sender.data.leftUrl, sender.data.nodeId);
+	        if (leftUrl) {
+	        	$('#tree', parent.document).attr('src', leftUrl);
+	        }
 	        
-	        var rightUrl = sender.data.rightUrl;
-	        rightUrl && $('#main', parent.document).attr('src', rightUrl);
+	        var rightUrl = formatUrl(sender.data.rightUrl, sender.data.nodeId);
+	        if (rightUrl) {
+	        	$('#main', parent.document).attr('src', rightUrl);
+	        }
 	        
 	        top.seajs.use('js/index.js', function(page) {
 	        	page.setNodeId(sender.data.nodeId);

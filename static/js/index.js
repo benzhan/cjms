@@ -47,6 +47,21 @@ define(function(require, exports, module) {
             $('#treeDiv').height(height);
             $('#main').height(height - $('#breadcrumbDiv').height() - 3);
         },
+        formatUrl : function(url, nodeId) {
+    		if (url) {
+            	var postfix = url.indexOf('?') >= 0 ? '&' : '?';
+            	var index = url.indexOf('#');
+            	if (index >= 0) {
+            		var part1 = url.substr(0, index);
+            		var part2 = url.substr(index);
+            		url = part1 + postfix + "_nodeId=" + nodeId + '#' + part2;
+            	} else {
+            		url += postfix + "_nodeId=" + nodeId;
+            	}
+            }
+    		
+    		return url;
+    	},
         bindNavEvent : function() {
         	 // 点击展现数据
             $('body').on(BDY.click, "[nodeId]", function() {
@@ -57,11 +72,13 @@ define(function(require, exports, module) {
          	   lib.setParam('nodeId', nodeId);
          	   M.getSiteMap();
          	   
+         	   leftUrl = C.formatUrl(leftUrl, nodeId);
          	   if (!leftUrl) {
          		   leftUrl = SITE_URL + 'default/menuTree?nodeId=' + nodeId;
          	   }
          	   $('#tree').attr('src', leftUrl);
          	   
+         	   rightUrl = C.formatUrl(rightUrl, nodeId);
          	   if (rightUrl) {
          		   $('#main').attr('src', rightUrl);
          	   }

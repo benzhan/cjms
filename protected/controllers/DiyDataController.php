@@ -6,15 +6,30 @@
  */
 class DiyDataController extends BaseController {
 
+    private function checkReportRight() {
+        $dwHttp = new dwHttp();
+        $url = SITE_URL . "open/checkRight";
+        $data = array(
+            'url' => $_SERVER['REQUEST_URI'],
+            'userId' => $_SESSION['username'],
+        );
+        
+        $json = $dwHttp->post($url, $data);
+        $objResult = json_decode($json, true);
+        return $objResult;
+    }
+    
     function actionReport($args) {
         $this->_checkParam($args);
         
-        $objCondition = new DiyConditionController();
-        $conditionHtml = $objCondition->actionIndex($args, false);
-        $tableHtml = $this->actionTable($args, false);
+        $objResult = $this->checkReportRight();
         
-        $this->tpl->assign(compact('conditionHtml', 'tableHtml'));
-        $this->tpl->display('diy_report');
+        if (!$objResult['result']) {
+            Response::exitMsg("<meta charset='utf-8'><p>{$objResult['msg']}</p>");
+        } else {
+            $this->tpl->display('diy_report');
+        }
+        
     }
     
     /**

@@ -31,5 +31,19 @@ class RMenuNode extends Model {
         
         return $parentIds;
     }
+    
+    function getAllChildIds($nodeId) {
+        $nodeIds = array();
+        $tData = array($nodeId);
+    
+        while ($tData) {
+            $where = array('parentNodeId' => $tData);
+            $keyWord = array('_field' => 'nodeId');
+            $tData = $this->objHelper->getCol($where, $keyWord);
+            $nodeIds = array_merge($nodeIds, $tData);
+        }
+    
+        return $nodeIds;
+    }
 
 }

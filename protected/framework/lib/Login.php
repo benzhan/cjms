@@ -38,6 +38,7 @@ class Login {
 
     	$objHttp = new dwHttp();
     	$json = $objHttp->post($url, $data);
+    	// var_dump($json);exit;
     	
     	return json_decode($json, true);
     }
@@ -75,7 +76,7 @@ class Login {
     	$domain = COOKIE_DOMAIN;
     	$self = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     	$selfUrl = urlencode($self);
-    	exit("<meta charset='utf-8'>对不起，您没有权限！请联系Ben开通！<a href='" . SITE_URL ."user/login.php?url={$selfUrl}'>换个帐号登录</a>");
+    	Response::exitMsg("<meta charset='utf-8'>对不起，您没有权限！请联系Ben开通！<a href='" . SITE_URL ."user/login?url={$selfUrl}'>换个帐号登录</a>");
     }
 }
 
