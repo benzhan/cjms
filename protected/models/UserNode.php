@@ -39,7 +39,7 @@ class UserNode extends Model {
      */
     function checkRight($nodeId, $userName = null) {
         $allUserIds = $this->getAllUserIds($nodeId);
-        $userName = $userName || $_SESSION['username'];
+        $userName  || $userName = $_SESSION['username'];
         return in_array($userName, $allUserIds);
     }
 
