@@ -15,6 +15,19 @@ class Diy_Table extends Model {
 		return $this->objHelper->getRow($where);
 	}
 	
+	public function isAdmin($tableId) {
+	    $oConfig = new Diy_Table();
+	    $tableInfo = $oConfig->getTableInfo($tableId);
+	
+	    return $this->isAdmin2($tableInfo);
+	}
+	
+	public function isAdmin2($tableInfo) {
+	    $admins = explode(',', $tableInfo['admins']);
+	    return in_array($_SESSION['username'], $admins);
+	}
+	
+	
 	/**
 	 * 获取格式化字段长度后的列信息，key => value格式，其中fieldName为key
 	 * @param string $tableId 表Id

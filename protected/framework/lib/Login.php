@@ -54,9 +54,11 @@ class Login {
         	if ($result && $result['username']) {
         		if (!self ::checkPermissions($result['username'])) {
         			unset($_SESSION["username"]);
+        			unset($_SESSION["yyuid"]);
         			self::noPermission();
         		} else {
         			$_SESSION["username"] = $result['username'];
+        			$_SESSION["yyuid"] = $result['yyuid'];
         		}
         	} else {
         		self::openLogin();

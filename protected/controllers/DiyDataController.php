@@ -22,14 +22,15 @@ class DiyDataController extends BaseController {
     function actionReport($args) {
         $this->_checkParam($args);
         
-        $objResult = $this->checkReportRight();
-        
-        if (!$objResult['result']) {
-            Response::exitMsg("<meta charset='utf-8'><p>{$objResult['msg']}</p>");
-        } else {
-            $this->tpl->display('diy_report');
+        $objTable = new Diy_Table();
+        if (!$objTable->isAdmin($args['tableId'])) {
+            $objResult = $this->checkReportRight();
+            if (!$objResult['result']) {
+                Response::exitMsg("<meta charset='utf-8'><p>{$objResult['msg']}</p>");
+            }
         }
         
+        $this->tpl->display('diy_report');
     }
     
     /**
@@ -60,6 +61,7 @@ class DiyDataController extends BaseController {
             
             $this->assignTableArgs($datas, $other);
             $template = Template::init();
+            
             if ($display) {
                 $template->display('diy_table');
             } else {

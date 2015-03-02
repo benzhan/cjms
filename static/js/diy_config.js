@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 	var lib = require('lib'), form = require('form');
-	var map;
+	var map = null;
 	
 	var M = {
 		getDbs : function() {
@@ -94,6 +94,7 @@ define(function(require, exports, module) {
                 'tableId': $('#tableId').val() || lib.getParam('tableId'),
                 'tableName': $('#tableCName').val(),
                 'tableCName': $('#tableCName').val(),
+                'admins':$('#admins').val(),
                 'pagination':$('#pagination').val(),
                 'tableInfo': $('#tableInfo').val(),
                 'extraJsCss': $('#extraJsCss').val(),

@@ -20,6 +20,10 @@ class DiyConfigController extends BaseController {
         if ($tableId) {
             $oConfigTable = new Diy_Table();
             $tableInfo = $oConfigTable->getTableInfo($tableId);
+            $isAdmin = $oConfigTable->isAdmin2($tableInfo);
+            if (!$isAdmin) {
+                Response::exitMsg("<meta charset='utf-8'><p>对不起，您没有权限. </p>");
+            }
             $link = SITE_URL . 'DiyData/report?tableId=' . $tableId;
         } else {
             $link = "新建的页面,保存后自动生成...";
@@ -30,7 +34,7 @@ class DiyConfigController extends BaseController {
         $map = $GLOBALS['diy']['map'];
         $pageSizes = $GLOBALS['diy']['pageSizes'];
 
-        $args = compact('tableInfo', 'sourceHosts', 'link', 'map', 'pageSizes');
+        $args = compact('tableInfo', 'sourceHosts', 'link', 'map', 'pageSizes', 'isAdmin');
         $this->tpl->assign($args);
         $this->tpl->display('diy_config');
     }
@@ -249,7 +253,6 @@ class DiyConfigController extends BaseController {
     }
     
     public function actionCopyTable($args) {
-        global $user;
         $tableId = $args['tableId'];
         $rules = array(
             'tableId' => array('string', 'nullable' => true),
@@ -272,8 +275,12 @@ class DiyConfigController extends BaseController {
             $table['tableName'] .= '【复制】' . $table['createTime'];
             $table['tableCName'] .= '【复制】' . $table['createTime'];
             $table['lastModifyTime'] = date('Y-m-d H:i:s');
-            $table['authorId'] = $user['userId'] ? $user['userId'] : 0;
-            $table['authorName'] = $user['userName'] ? $user['userName'] : 'guest';
+            
+            $table['authorId'] = $_SESSION['yyuid'] ? $_SESSION['yyuid'] : 0;
+            $table['authorName'] = $_SESSION['username'] ? $_SESSION['username'] : 'guest';
+            $table['admins'] = $table['authorName'];
+            $table['sourceUser'] = '';
+            $table['sourcePass'] = '';
     
             $oBase->addObject($table);
                 
@@ -310,7 +317,6 @@ class DiyConfigController extends BaseController {
             'tableId' => array('string', 'nullable' => true),
         );
         Param::checkParam($rules, $args);
-        
         
         // 检查权限
         $this->_checkRight($tableId);
@@ -374,12 +380,15 @@ class DiyConfigController extends BaseController {
     }
     
     /**
-     * TODO 检查用户权限
+     * 检查用户权限
      * @author benzhan
      * @param unknown $tableId
      */
     private function _checkRight($tableId) {
-        
+        $objTable = new Diy_Table();
+        if (!$objTable->isAdmin($tableId)) {
+            Response::error(CODE_NO_PERMITION, null, '');
+        }
     }
     
 }

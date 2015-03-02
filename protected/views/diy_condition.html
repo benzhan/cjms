@@ -1,4 +1,4 @@
-<div id="condition">
+<div id="condition" class="<?= $isAdmin ? '' : 'noPermision' ?>">
 
 <style>
 #advCondition { display:none; }
@@ -11,6 +11,7 @@
 #addCondition { margin-left:16px; } 
 
 #setDefaultCondition, #getDefaultCondition { margin-left:16px; }
+.noPermision .js-config { display:none; }
 </style>
 
 <script id="temp_form_inline" type="text/html">
@@ -24,7 +25,7 @@ for (var key in where) {
 	<button type="button" class="btn btn-link btn-sm" id="switchToNormal">普通查询>></button>
 	<button type="button" class="btn btn-link btn-sm" id="switchToAdv">高级查询>></button>
     <? if ($editLink) { ?>
-    <a class="btn btn-warning btn-sm" id="editReport" href="<?= $editLink ?>" target="_blank" >编辑配置</a>
+    <a class="btn btn-warning btn-sm js-config" id="editReport" href="<?= $editLink ?>" target="_blank" >编辑配置</a>
     <? } ?>
 </script>
 
@@ -57,8 +58,8 @@ for (var key in where) {
 <div class="panel panel-primary" id="advCondition">
   <div class="panel-heading">
       <span>当前条件</span>
-      <button class="btn btn-warning btn-sm" id="setDefaultCondition">设为默认</button>
-      <button class="btn btn-warning btn-sm" id="getDefaultCondition">载入默认</button>
+      <button class="btn btn-warning btn-sm js-config" id="setDefaultCondition">设为默认</button>
+      <button class="btn btn-warning btn-sm js-config" id="getDefaultCondition">载入默认</button>
   </div>
   <div class="panel-body">
     <form class="form-inline" id="advConditionForm">

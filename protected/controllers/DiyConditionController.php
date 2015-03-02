@@ -21,8 +21,8 @@ class DiyConditionController extends BaseController {
         require_once ROOT_PATH . 'diyConfig.inc.php';
         
         //将当前的查询条件合并上默认的查询条件
+        $oTable = new Diy_Table();
         if (!$args['notDefault']) {
-            $oTable = new Diy_Table();
             $defaultCondition = $oTable->getTableMeta(array('tableId' => $args['tableId'], 'metaKey' => 'tableDefaultCondition'));
             $defaultCondition = (array)  json_decode($defaultCondition['metaValue'], true);
             $defaultCondition = $this->_formatDefaultCondition($defaultCondition);
@@ -37,6 +37,8 @@ class DiyConditionController extends BaseController {
         if ($tableId) {
             $editLink = SITE_URL . 'DiyConfig/edit?tableId=' . $tableId;
         }
+        
+        $args['isAdmin'] = $oTable->isAdmin($tableId);
         
         $this->tpl->assign($args);
         $this->tpl->assign('opts', $GLOBALS['diy']['opts']);
