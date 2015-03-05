@@ -6,6 +6,20 @@ define(function(require, exports, module) {
 	require('datetimepicker');
 	
 	var M = {
+		setDefaultView : function() {
+            var url = lib.url + 'diyConfig/setDefaultView';
+            var data = {}; 
+	    	data.tableId = lib.getParam('tableId');
+            data.metaValue = lib.removeParam2('where', document.location.hash.substr(2));
+            
+            lib.post(url, data, function(objResult) {
+                if (objResult.result) {
+                    lib.showTip(objResult.msg);
+                } else {
+                	lib.showErrorTip(objResult.msg);
+                }
+            });
+        }, 
 	    setDefaultCondition : function() {
             var url = lib.url + 'diyConfig/setDefaultCondition';
             var data = {}; 
@@ -19,7 +33,6 @@ define(function(require, exports, module) {
                 	lib.showErrorTip(objResult.msg);
                 }
             });
-            
         }, 
         getDefaultCondition : function() {
         	var url = lib.url + 'diyConfig/getDefaultCondition';
@@ -76,6 +89,8 @@ define(function(require, exports, module) {
         	
         	$(document).on(BDY.click, '#setDefaultCondition', M.setDefaultCondition);
         	$(document).on(BDY.click, '#getDefaultCondition', M.getDefaultCondition);
+			$(document).on(BDY.click, '#setDefaultView', M.setDefaultView);
+			
         },
         getWhere : function(allowEmpty) {
         	var where = [];
@@ -174,6 +189,7 @@ define(function(require, exports, module) {
 				$('#normalCondition').hide();
 				$('#advCondition').show();
 			});
+
         },
         initDatetimePicker : function(e) {
 			var $this = $(this);

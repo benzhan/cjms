@@ -37,8 +37,11 @@ class Login {
     	$data["format"] = "json";
 
     	$objHttp = new dwHttp();
-    	$json = $objHttp->post($url, $data);
-    	// var_dump($json);exit;
+    	$i = 0;
+    	do {
+        	$json = $objHttp->post($url, $data, 2);
+        	$i++;
+    	} while($json && $i < 3);
     	
     	return json_decode($json, true);
     }

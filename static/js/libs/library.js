@@ -5,6 +5,7 @@ define(function(require, exports, module) {
     exports.setParam = setParam;
     exports.setParam2 = setParam2;
     exports.removeParam = removeParam;
+    exports.removeParam2 = removeParam2;
     
     exports.post = post;
     exports.get = get;
@@ -140,11 +141,7 @@ define(function(require, exports, module) {
      */
     function removeParam(name, causeHistory) {
         var hash = document.location.hash.substr(2);
-        var reg = new RegExp("(^|!|&)" + name + "=([^&]*)(&|$)");
-        r = hash.match(reg);
-        if (r) {
-        	hash = hash.replace(r[0], "");
-        }
+        hash = removeParam2(name, hash);
         
         if (causeHistory) {
             document.location.hash = "!" + hash;
@@ -155,6 +152,21 @@ define(function(require, exports, module) {
                 console.error("history.replaceState:" + history.replaceState);
             }
         }
+    };
+    
+    /**
+     * 删除锚点后的某个参数
+     * @author benzhan
+     * @param {string} name 参数名
+     */
+    function removeParam2(name, hash) {
+        var reg = new RegExp("(^|!|#|&)" + name + "=([^&]*)(&|$)");
+        r = hash.match(reg);
+        if (r) {
+        	hash = hash.replace(r[0], r[1]);
+        }
+        
+        return hash;
     };
     
     function parseHash(strUrl) {

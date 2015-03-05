@@ -349,21 +349,29 @@ class DiyConfigController extends BaseController {
         
         return true;
     }
-
-    public function actionSetDefaultCondition($args) {
+    
+    private function _setDefault($args, $metaKey) {
         $rules = array(
             'tableId' => 'string',
             'metaValue' => 'string'
         );
         Param::checkParam2($rules, $args);
-    
-        $args['metaKey'] = 'tableDefaultCondition';
+        
+        $args['metaKey'] = $metaKey;
         // 检查权限
         $this->_checkRight($args['tableId']);
-    
+        
         $objTable = new Diy_Table();
         $flag = $objTable->setTableMeta($args);
         Response::success($flag, '保存成功！');
+    }
+
+    public function actionSetDefaultCondition($args) {
+        $this->_setDefault($args, 'tableDefaultCondition');
+    }
+    
+    public function actionSetDefaultView($args) {
+        $this->_setDefault($args, 'tableDefaultView');
     }
     
     public function actionGetDefaultCondition($args) {
