@@ -41,7 +41,7 @@ class Login {
     	do {
         	$json = $objHttp->post($url, $data, 2);
         	$i++;
-    	} while($json && $i < 3);
+    	} while(!$json && $i < 3);
     	
     	return json_decode($json, true);
     }

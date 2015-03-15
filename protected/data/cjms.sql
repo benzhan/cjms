@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 28, 2015 at 03:41 AM
+-- Generation Time: Mar 15, 2015 at 02:37 PM
 -- Server version: 5.6.15
 -- PHP Version: 5.4.35
 
@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `Cmdb3Table` (
   `excelFlag` tinyint(1) unsigned NOT NULL COMMENT '导出Excel的标识',
   `groupFlag` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '分组计算的标识',
   `chartFlag` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '绘图的标识',
+  `admins` varchar(1000) DEFAULT NULL COMMENT '管理员',
   PRIMARY KEY (`tableId`),
   UNIQUE KEY `tableName` (`tableName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -122,10 +123,10 @@ CREATE TABLE IF NOT EXISTS `Cmdb3Table` (
 -- Dumping data for table `Cmdb3Table`
 --
 
-INSERT INTO `Cmdb3Table` (`tableId`, `tableName`, `tableCName`, `tableInfo`, `extraJsCss`, `pagination`, `authorId`, `authorName`, `createTime`, `lastModifyTime`, `sourceType`, `sourceHost`, `sourceDb`, `sourcePort`, `sourceTable`, `sourceUser`, `sourcePass`, `sourceCallBack`, `editFlag`, `bookFlag`, `excelFlag`, `groupFlag`, `chartFlag`) VALUES
-('5ae5bec9-605c-a818-ec0c-fad631eed6d1', '测试', '测试', '', '', 10, NULL, 'guest', '2015-02-27 08:05:49', '2015-02-27 16:05:49', '', '127.0.0.1', 'test', 3306, 'test', 'root', 'root', '', 0, 0, 0, 0, 0),
-('bdb886aa-5fb4-09cc-293e-2603e76ee2f2', '用户管理', '用户管理', '', '', 10, NULL, 'guest', '2015-02-27 10:16:43', '2015-02-28 09:32:25', '', '127.0.0.1', 'Web', 3306, 'cUser', 'root', 'root', '', 0, 0, 0, 0, 0),
-('ee524ea0-10e2-edf9-9ad5-7222c4b567cc', '自助数据展现V3 - 列表 <a href="javascript:void(0);"onclick="editItem();">新建</a>', '自助数据展现V3 - 列表 <a href="javascript:void(0);"onclick="editItem();">新建</a>', '', '<script>\n\nseajs.use(''lib'', function(lib) {\n\n	//查看连接\n	window.viewItem = function(tableId) {\n		var url = SITE_URL + ''DiyData/report?tableId='' + tableId;\n		window.open(url);\n	};\n\n	//编辑按钮\n	window.editItem = function(tableId) {\n		var url = SITE_URL + ''DiyConfig/edit?tableId='' + (tableId || '''');\n		window.open(url);\n	};\n\n	//复制按钮\n	window.copyItem = function(tableId) {\n		if (!confirm(''确定要复制吗？'')) { return false; }\n\n		var url = lib.url + "diyConfig/copyTable";\n		var data = {tableId:tableId};\n		lib.post(url, data, function(objResult) {\n			if (objResult.result) {\n				lib.showTip(''复制成功！'');\n				seajs.use("js/diy_table", function(page) {\n					page.loadTable();\n				});\n			} else {\n				lib.showErrorTip(objResult.msg);\n			}\n		}, {\n		    loading : true\n		});\n	};\n\n	//删除按钮\n	window.deleteItem = function(tableId) {\n		if (!confirm(''确定要删除吗？'')) { return false; }\n		\n		var url = lib.url + "diyConfig/deleteTable";\n		var data = {tableId:tableId};\n		lib.post(url, data, function(objResult) {\n			if (objResult.result) {\n				lib.showTip(''删除成功！'');\n				seajs.use("js/diy_table", function(page) {\n					page.loadTable();\n				});\n			} else {\n				lib.showErrorTip(objResult.msg);\n			}\n		}, {\n		    loading : true\n		});\n	};\n});\n</script>\n', 20, 50013623, 'dw_zhanchaojiang', '2014-03-16 15:35:36', '2015-02-27 18:19:54', '', '127.0.0.1', 'Report', 3306, 'Cmdb3Table', 'root', 'root', 'return "(SELECT * FROM Cmdb3Table WHERE tableId != ''ee524ea0-10e2-edf9-9ad5-7222c4b567cc'') AS t";', 0, 0, 1, 1, 0);
+INSERT INTO `Cmdb3Table` (`tableId`, `tableName`, `tableCName`, `tableInfo`, `extraJsCss`, `pagination`, `authorId`, `authorName`, `createTime`, `lastModifyTime`, `sourceType`, `sourceHost`, `sourceDb`, `sourcePort`, `sourceTable`, `sourceUser`, `sourcePass`, `sourceCallBack`, `editFlag`, `bookFlag`, `excelFlag`, `groupFlag`, `chartFlag`, `admins`) VALUES
+('5ae5bec9-605c-a818-ec0c-fad631eed6d1', '测试', '测试', '', '', 10, NULL, 'dw_zhanchaojiang', '2015-02-27 08:05:49', '2015-02-27 16:05:49', '', '127.0.0.1', 'test', 3306, 'test', 'root', 'root', '', 0, 0, 0, 0, 0, 'dw_zhanchaojiang'),
+('bdb886aa-5fb4-09cc-293e-2603e76ee2f2', '用户管理', '用户管理', '', '', 10, NULL, 'dw_zhanchaojiang', '2015-02-27 10:16:43', '2015-02-28 09:32:25', '', '127.0.0.1', 'Web', 3306, 'cUser', 'root', 'root', '', 0, 0, 0, 0, 0, 'dw_zhanchaojiang'),
+('ee524ea0-10e2-edf9-9ad5-7222c4b567cc', '自助数据展现V3 - 列表 <a href="javascript:void(0);"onclick="editItem();">新建</a>', '自助数据展现V3 - 列表 <a href="javascript:void(0);"onclick="editItem();">新建</a>', '', '<script>\n\nseajs.use(''lib'', function(lib) {\n\n	//查看连接\n	window.viewItem = function(tableId) {\n		var url = SITE_URL + ''DiyData/report?tableId='' + tableId;\n		window.open(url);\n	};\n\n	//编辑按钮\n	window.editItem = function(tableId) {\n		var url = SITE_URL + ''DiyConfig/edit?tableId='' + (tableId || '''');\n		window.open(url);\n	};\n\n	//复制按钮\n	window.copyItem = function(tableId) {\n		if (!confirm(''确定要复制吗？'')) { return false; }\n\n		var url = lib.url + "diyConfig/copyTable";\n		var data = {tableId:tableId};\n		lib.post(url, data, function(objResult) {\n			if (objResult.result) {\n				lib.showTip(''复制成功！'');\n				seajs.use("js/diy_table", function(page) {\n					page.loadTable();\n				});\n			} else {\n				lib.showErrorTip(objResult.msg);\n			}\n		}, {\n		    loading : true\n		});\n	};\n\n	//删除按钮\n	window.deleteItem = function(tableId) {\n		if (!confirm(''确定要删除吗？'')) { return false; }\n		\n		var url = lib.url + "diyConfig/deleteTable";\n		var data = {tableId:tableId};\n		lib.post(url, data, function(objResult) {\n			if (objResult.result) {\n				lib.showTip(''删除成功！'');\n				seajs.use("js/diy_table", function(page) {\n					page.loadTable();\n				});\n			} else {\n				lib.showErrorTip(objResult.msg);\n			}\n		}, {\n		    loading : true\n		});\n	};\n});\n</script>\n', 20, 50013623, 'dw_zhanchaojiang', '2014-03-16 15:35:36', '2015-02-27 18:19:54', '', '127.0.0.1', 'Report', 3306, 'Cmdb3Table', 'root', 'root', 'return "(SELECT * FROM Cmdb3Table WHERE tableId != ''ee524ea0-10e2-edf9-9ad5-7222c4b567cc'') AS t";', 0, 0, 1, 1, 0, 'dw_zhanchaojiang');
 
 -- --------------------------------------------------------
 
@@ -234,7 +235,6 @@ INSERT INTO `rMenuNode` (`nodeId`, `parentNodeId`, `sortPos`) VALUES
 (2, 3, 1),
 (3, 0, 2),
 (4, 3, 2),
-(27, 3, 3),
 (28, 3, 4);
 
 -- --------------------------------------------------------
@@ -262,9 +262,9 @@ INSERT INTO `rUserNode` (`nodeId`, `userId`) VALUES
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `vMenuNode`
+-- Stand-in structure for view `vmenunode`
 --
-CREATE TABLE IF NOT EXISTS `vMenuNode` (
+CREATE TABLE IF NOT EXISTS `vmenunode` (
 `nodeId` int(11)
 ,`nodeName` varchar(64)
 ,`leftUrl` varchar(1024)
@@ -276,9 +276,9 @@ CREATE TABLE IF NOT EXISTS `vMenuNode` (
 -- --------------------------------------------------------
 
 --
--- Structure for view `vMenuNode`
+-- Structure for view `vmenunode`
 --
-DROP TABLE IF EXISTS `vMenuNode`;
+DROP TABLE IF EXISTS `vmenunode`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vmenunode` AS (select `c`.`nodeId` AS `nodeId`,`c`.`nodeName` AS `nodeName`,`c`.`leftUrl` AS `leftUrl`,`c`.`rightUrl` AS `rightUrl`,`r`.`parentNodeId` AS `parentNodeId`,`c2`.`nodeName` AS `parentNodeName`,`r`.`sortPos` AS `sortPos` from ((`rmenunode` `r` left join `cmenunode` `c` on((`c`.`nodeId` = `r`.`nodeId`))) left join `cmenunode` `c2` on((`c2`.`nodeId` = `r`.`parentNodeId`))));
 
